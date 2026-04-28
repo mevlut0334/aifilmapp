@@ -2,6 +2,7 @@
 
 > Bu doküman yapay zeka destekli geliştirme için hazırlanmıştır.
 > Her faz bağımsızdır. Bir fazı tamamlamadan diğerine geçme.
+> **Her dosya tek tek yazılır, bir sonrakine geçmek için kullanıcı onayı beklenir.**
 
 ---
 
@@ -12,9 +13,10 @@
 3. [Mimari](#mimari)
 4. [Klasör Yapısı](#klasör-yapısı)
 5. [Katman Kuralları](#katman-kuralları)
-6. [API Bilgileri](#api-bilgileri)
-7. [Faz Planı](#faz-planı)
-8. [Yapay Zekaya Kod Yazdırma Kuralları](#yapay-zekaya-kod-yazdırma-kuralları)
+6. [Background Job Mimarisi](#background-job-mimarisi)
+7. [API Bilgileri](#api-bilgileri)
+8. [Faz Planı](#faz-planı)
+9. [Yapay Zekaya Kod Yazdırma Kuralları](#yapay-zekaya-kod-yazdırma-kuralları)
 
 ---
 
@@ -30,6 +32,7 @@ Kullanıcıların template veya custom prompt kullanarak yapay zeka destekli gö
 - Custom video üretimi ve segment takibi
 - Segment bazlı düzenleme talepleri
 - Üretim durumu takibi (polling)
+- **Görsel yükleme işlemleri arka planda (background job) çalışır — kullanıcı ekranda beklemez**
 
 ---
 
@@ -50,6 +53,10 @@ Kullanıcıların template veya custom prompt kullanarak yapay zeka destekli gö
 | `cached_network_image` | ^3.3.0 | Resim önbellekleme |
 | `video_player` | ^2.8.0 | Video önizleme |
 | `image_picker` | ^1.0.0 | Fotoğraf seçme |
+| `workmanager` | ^0.5.0 | **Background job — görsel yükleme** |
+| `flutter_local_notifications` | ^17.0.0 | **Job tamamlandığında bildirim** |
+| `uuid` | ^4.0.0 | **Job ID üretimi** |
+| `shared_preferences` | ^2.2.0 | **Job kuyruğu ve durumu kalıcı saklama** |
 
 ---
 
@@ -76,6 +83,18 @@ UI (Screen)
                                                                               └── HTTP → API
 ```
 
+**Görsel yükleme veri akışı (background job):**
+
+```
+UI (Screen)
+  └── "Talep Oluştur" butonuna basar
+       └── JobQueueService'e iş ekler (anında döner)
+            └── UI → liste ekranına yönlendirilir (beklemez)
+                 └── WorkManager → arka planda çalışır
+                                    └── multipart upload → API
+                                         └── Tamamlanınca bildirim + provider güncellenir
+```
+
 **Altın kural:** Hiçbir katman kendinden üst katmanı import etmez.
 
 ---
@@ -85,28 +104,34 @@ UI (Screen)
 ```
 lib/
 │
-├── core/                          # Tüm feature'ların ortak kullandığı kodlar
+├── core/
 │   ├── constants/
-│   │   ├── api_constants.dart     # Base URL, tüm endpoint path'leri
-│   │   └── app_constants.dart     # Genel sabitler
+│   │   ├── api_constants.dart
+│   │   └── app_constants.dart
 │   │
 │   ├── network/
-│   │   ├── api_client.dart        # Dio instance (Provider olarak)
-│   │   ├── api_response.dart      # Generic ApiResponse<T> modeli
+│   │   ├── api_client.dart
+│   │   ├── api_response.dart
 │   │   └── interceptors/
-│   │       ├── auth_interceptor.dart      # Bearer token inject eder
-│   │       └── app_key_interceptor.dart   # X-App-Key ve X-Secret-Key inject eder
+│   │       ├── auth_interceptor.dart
+│   │       └── app_key_interceptor.dart
 │   │
 │   ├── error/
-│   │   ├── failures.dart          # ServerFailure, NetworkFailure, etc.
-│   │   └── exceptions.dart        # ServerException, NetworkException
+│   │   ├── failures.dart
+│   │   └── exceptions.dart
 │   │
 │   ├── utils/
-│   │   ├── result.dart            # Result<T> = Success<T> | Failure
-│   │   └── extensions.dart        # Yardımcı extension'lar
+│   │   ├── result.dart
+│   │   └── extensions.dart
 │   │
-│   └── storage/
-│       └── secure_storage.dart    # Token okuma/yazma
+│   ├── storage/
+│   │   └── secure_storage.dart
+│   │
+│   └── jobs/                          ← YENİ: Background job altyapısı
+│       ├── job_model.dart             # JobStatus enum + UploadJob modeli
+│       ├── job_queue_service.dart     # İş ekleme, listeleme, durum güncelleme
+│       ├── job_worker.dart            # WorkManager callback — asıl upload mantığı
+│       └── job_notification_service.dart  # Bildirim gönderme
 │
 ├── features/
 │   │
@@ -123,7 +148,7 @@ lib/
 │   │   │   ├── entities/
 │   │   │   │   └── user_entity.dart
 │   │   │   ├── repositories/
-│   │   │   │   └── auth_repository.dart       # abstract class
+│   │   │   │   └── auth_repository.dart
 │   │   │   └── usecases/
 │   │   │       ├── login_usecase.dart
 │   │   │       ├── register_usecase.dart
@@ -149,7 +174,7 @@ lib/
 │   │   │   ├── entities/
 │   │   │   │   └── template_entity.dart
 │   │   │   ├── repositories/
-│   │   │   │   └── template_repository.dart   # abstract class
+│   │   │   │   └── template_repository.dart
 │   │   │   └── usecases/
 │   │   │       ├── get_templates_usecase.dart
 │   │   │       └── get_template_detail_usecase.dart
@@ -174,7 +199,7 @@ lib/
 │   │   │   ├── entities/
 │   │   │   │   └── generation_request_entity.dart
 │   │   │   ├── repositories/
-│   │   │   │   └── generation_repository.dart  # abstract class
+│   │   │   │   └── generation_repository.dart
 │   │   │   └── usecases/
 │   │   │       ├── create_template_generation_usecase.dart
 │   │   │       ├── create_custom_image_usecase.dart
@@ -206,7 +231,7 @@ lib/
 │       │   │   ├── custom_video_request_entity.dart
 │       │   │   └── segment_entity.dart
 │       │   ├── repositories/
-│       │   │   └── custom_video_repository.dart  # abstract class
+│       │   │   └── custom_video_repository.dart
 │       │   └── usecases/
 │       │       ├── create_custom_video_usecase.dart
 │       │       ├── get_custom_video_requests_usecase.dart
@@ -273,6 +298,89 @@ Bu kurallar değiştirilemez. Yapay zekanın her dosyada uyması gerekir.
 - Provider'ı `ref.watch()` ile izler
 - İş mantığı içermez
 - Widget'ları `widgets/` klasöründen import eder
+
+---
+
+## Background Job Mimarisi
+
+> Kullanıcının görsel yüklediği **her** talep oluşturma ekranı bu akışı kullanır.
+> Kullanıcı "Oluştur" butonuna basınca iş kuyruğa eklenir ve ekran anında kapanır.
+
+### Kapsam
+
+Aşağıdaki ekranlar background job kullanır:
+
+| Ekran | Sebep |
+|---|---|
+| `create_template_generation_screen.dart` | `input_image` multipart upload |
+| `create_custom_image_screen.dart` | `input_image` opsiyonel upload |
+| `create_custom_video_screen.dart` | `reference_image` upload |
+| `segment_edit_dialog.dart` | Edit prompt — görsel eklenmişse |
+
+### Job Durumları
+
+```dart
+enum JobStatus {
+  queued,      // Kuyruğa alındı
+  uploading,   // Yükleniyor
+  completed,   // API'ye başarıyla iletildi
+  failed,      // Hata oluştu
+}
+```
+
+### Job Modeli (`core/jobs/job_model.dart`)
+
+```dart
+class UploadJob {
+  final String jobId;          // uuid v4
+  final String type;           // 'template_generation' | 'custom_image' | 'custom_video' | 'segment_edit'
+  final String imagePath;      // Yerel dosya yolu
+  final Map<String, dynamic> params;  // API'ye gönderilecek diğer alanlar
+  final JobStatus status;
+  final String? errorMessage;
+  final DateTime createdAt;
+}
+```
+
+### Akış
+
+```
+1. Kullanıcı formu doldurur, görsel seçer
+2. Screen → JobQueueService.enqueue(UploadJob) çağırır
+3. JobQueueService → shared_preferences'a job kaydeder
+4. JobQueueService → WorkManager.registerOneOffTask(jobId) tetikler
+5. Screen → liste ekranına yönlendirilir (kullanıcı beklemez)
+6. WorkManager arka planda:
+     a. Job verilerini shared_preferences'tan okur
+     b. Dosyayı multipart/form-data ile API'ye gönderir
+     c. Başarılıysa: job status = completed, bildirim gönderir
+     d. Başarısızsa: job status = failed, retry veya bildirim
+7. Liste ekranı açıksa provider invalidate edilir, liste yenilenir
+```
+
+### Job Worker (`core/jobs/job_worker.dart`)
+
+```dart
+// WorkManager callback — @pragma('vm:entry-point') olmalı
+@pragma('vm:entry-point')
+void callbackDispatcher() {
+  Workmanager().executeTask((taskName, inputData) async {
+    // 1. SharedPreferences'tan UploadJob'u oku
+    // 2. Job tipine göre ilgili datasource'u çağır
+    // 3. Başarı/hata durumunu shared_preferences'a yaz
+    // 4. Bildirim gönder
+    return Future.value(true);
+  });
+}
+```
+
+### Kurallar
+
+- **Worker içinde Riverpod provider kullanılmaz.** Worker bağımsız bir isolate'te çalışır.
+- **Worker direkt datasource'u çağırır**, usecase zincirini kullanmaz.
+- **Token okuma:** Worker içinde `FlutterSecureStorage` direkt kullanılır.
+- **Hata durumunda** kullanıcıya bildirim gönderilir, job `failed` olarak işaretlenir.
+- **Liste ekranı** açıkken `pending` jobları gösterir (`JobStatus.queued | uploading`).
 
 ---
 
@@ -372,7 +480,12 @@ Authorization: Bearer {token}  → login sonrası SecureStorage'dan okunur
 
 ## Faz Planı
 
-> Her faz bağımsız çalışır. Bir faz bitmeden diğerine geçilmez.
+> **Temel Kural:** Her faz bağımsız çalışır. Bir faz bitmeden diğerine geçilmez.
+>
+> **Dosya Oluşturma Kuralı:** Dosyalar **sırayla** oluşturulur. Bir dosya yazılır,
+> kullanıcı onay verir, sonra bir sonraki dosyaya geçilir.
+> **Boş dosya veya klasör yapısı önceden oluşturulmaz.**
+>
 > Her fazın sonunda `flutter run` ile uygulama ayağa kalkmalıdır.
 
 ---
@@ -380,193 +493,212 @@ Authorization: Bearer {token}  → login sonrası SecureStorage'dan okunur
 ### Faz 0 — Proje İskeleti
 **Süre: ~30 dakika**
 
-Bu fazda sadece proje yapısı kurulur, hiç iş mantığı yazılmaz.
+Bu fazda sadece temel kurulum yapılır. Boş dosya/klasör yapısı oluşturulmaz.
 
-**Yapılacaklar:**
-1. `flutter create` ile proje oluştur
-2. `pubspec.yaml`'a tüm paketleri ekle
-3. Klasör yapısını oluştur (boş dosyalar)
-4. `core/utils/result.dart` — `Result<T>` tipi
-5. `core/error/failures.dart` — Failure tipleri
-6. `core/error/exceptions.dart` — Exception tipleri
-7. `core/constants/api_constants.dart` — Tüm endpoint path'leri
-8. `.env` dosyası ve `envied` setup
-9. `main.dart` — sadece `ProviderScope` ile `MaterialApp`
+**Dosya sırası (her biri için onay beklenir):**
 
-**Tamamlandı kriteri:** `flutter run` çalışır, boş ekran açılır.
+| # | Dosya | Açıklama |
+|---|---|---|
+| 1 | `pubspec.yaml` | Tüm paketler eklenir |
+| 2 | `.env` | App key, secret key, base URL |
+| 3 | `lib/main.dart` | Sadece ProviderScope + MaterialApp |
+| 4 | `lib/core/utils/result.dart` | `Result<T>` tipi |
+| 5 | `lib/core/error/failures.dart` | Failure tipleri |
+| 6 | `lib/core/error/exceptions.dart` | Exception tipleri |
+| 7 | `lib/core/constants/api_constants.dart` | Base URL + tüm endpoint path'leri |
+| 8 | `lib/core/constants/app_constants.dart` | Genel sabitler |
+
+**Her dosya sonrası:** Yapay zeka durur ve şunu yazar:
+> ✅ `[dosya adı]` tamamlandı. Onaylarsanız `[sonraki dosya]` ile devam edelim.
+
+**Faz tamamlandı kriteri:** `flutter run` çalışır, boş ekran açılır.
 
 ---
 
 ### Faz 1 — Core Network Katmanı
 **Süre: ~45 dakika**
 
-API ile konuşacak olan temel altyapı. Hiçbir feature henüz yok.
+**Dosya sırası (her biri için onay beklenir):**
 
-**Yapılacaklar:**
-1. `core/network/api_response.dart` — Generic `ApiResponse<T>`
-2. `core/network/interceptors/app_key_interceptor.dart`
-3. `core/network/interceptors/auth_interceptor.dart`
-4. `core/network/api_client.dart` — Dio Provider
-5. `core/storage/secure_storage.dart` — Token saklama
-6. Postman veya DIO logger ile endpoint test
+| # | Dosya | Açıklama |
+|---|---|---|
+| 1 | `lib/core/storage/secure_storage.dart` | Token okuma/yazma |
+| 2 | `lib/core/network/api_response.dart` | Generic `ApiResponse<T>` |
+| 3 | `lib/core/network/interceptors/app_key_interceptor.dart` | X-App-Key inject |
+| 4 | `lib/core/network/interceptors/auth_interceptor.dart` | Bearer token inject |
+| 5 | `lib/core/network/api_client.dart` | Dio Provider |
 
-**Tamamlandı kriteri:** Login endpoint'e manuel istek atılabilir, response parse edilir.
+**Faz tamamlandı kriteri:** Login endpoint'e manuel istek atılabilir, response parse edilir.
 
 ---
 
 ### Faz 2 — Auth Feature
 **Süre: ~60 dakika**
 
-Login, register, logout ve profil. Routing henüz basit.
+**Dosya sırası (her biri için onay beklenir):**
 
-**Yapılacaklar:**
+| # | Dosya | Katman |
+|---|---|---|
+| 1 | `domain/entities/user_entity.dart` | Domain |
+| 2 | `domain/repositories/auth_repository.dart` | Domain (abstract) |
+| 3 | `domain/usecases/login_usecase.dart` | Domain |
+| 4 | `domain/usecases/register_usecase.dart` | Domain |
+| 5 | `domain/usecases/logout_usecase.dart` | Domain |
+| 6 | `data/models/user_model.dart` | Data |
+| 7 | `data/models/login_response_model.dart` | Data |
+| 8 | `data/datasources/auth_remote_datasource.dart` | Data |
+| 9 | `data/repositories/auth_repository_impl.dart` | Data |
+| 10 | `presentation/providers/auth_provider.dart` | Presentation |
+| 11 | `presentation/widgets/auth_form_field.dart` | Presentation |
+| 12 | `presentation/screens/login_screen.dart` | Presentation |
+| 13 | `presentation/screens/register_screen.dart` | Presentation |
+| 14 | `app/router.dart` | Routing (go_router) |
 
-*Domain katmanı:*
-1. `user_entity.dart`
-2. `auth_repository.dart` (abstract)
-3. `login_usecase.dart`, `register_usecase.dart`, `logout_usecase.dart`
-
-*Data katmanı:*
-4. `login_response_model.dart`, `user_model.dart`
-5. `auth_remote_datasource.dart`
-6. `auth_repository_impl.dart`
-
-*Presentation katmanı:*
-7. `auth_provider.dart` — `AsyncNotifier`
-8. `login_screen.dart`
-9. `register_screen.dart`
-
-*Routing:*
-10. `go_router` setup — `/login`, `/register`, `/home` route'ları
-11. Token varsa `/home`'a yönlendir, yoksa `/login`'e
-
-**Tamamlandı kriteri:** Gerçek kullanıcı ile giriş yapılabilir, token kaydedilir, home sayfasına geçilir.
+**Faz tamamlandı kriteri:** Gerçek kullanıcı ile giriş yapılabilir, token kaydedilir, home sayfasına geçilir.
 
 ---
 
 ### Faz 3 — Template Feature
 **Süre: ~45 dakika**
 
-Template listesi ve detay sayfası. Henüz talep oluşturma yok.
+**Dosya sırası (her biri için onay beklenir):**
 
-**Yapılacaklar:**
+| # | Dosya | Katman |
+|---|---|---|
+| 1 | `domain/entities/template_entity.dart` | Domain (`title`/`description` `Map<String,String>`) |
+| 2 | `domain/repositories/template_repository.dart` | Domain (abstract) |
+| 3 | `domain/usecases/get_templates_usecase.dart` | Domain |
+| 4 | `domain/usecases/get_template_detail_usecase.dart` | Domain |
+| 5 | `data/models/template_model.dart` | Data |
+| 6 | `data/datasources/template_remote_datasource.dart` | Data |
+| 7 | `data/repositories/template_repository_impl.dart` | Data |
+| 8 | `presentation/providers/template_provider.dart` | Presentation |
+| 9 | `presentation/widgets/template_card.dart` | Presentation |
+| 10 | `presentation/screens/template_list_screen.dart` | Presentation |
+| 11 | `presentation/screens/template_detail_screen.dart` | Presentation |
 
-*Domain katmanı:*
-1. `template_entity.dart` — `title` ve `description` `Map<String, String>` olmalı (çok dil)
-2. `template_repository.dart` (abstract)
-3. `get_templates_usecase.dart`, `get_template_detail_usecase.dart`
-
-*Data katmanı:*
-4. `template_model.dart`
-5. `template_remote_datasource.dart`
-6. `template_repository_impl.dart`
-
-*Presentation katmanı:*
-7. `template_provider.dart`
-8. `template_list_screen.dart` — orientation filter ile
-9. `template_detail_screen.dart` — video önizleme
-10. `template_card.dart` widget
-
-**Tamamlandı kriteri:** Template'ler listelenir, detay sayfası açılır, video oynatılır.
+**Faz tamamlandı kriteri:** Template'ler listelenir, detay sayfası açılır, video oynatılır.
 
 ---
 
-### Faz 4 — Generation Feature (Template + Custom Image)
+### Faz 4 — Background Job Altyapısı
+**Süre: ~45 dakika**
+
+> Bu faz, görsel yükleme içeren tüm feature'lardan **önce** tamamlanır.
+
+**Dosya sırası (her biri için onay beklenir):**
+
+| # | Dosya | Açıklama |
+|---|---|---|
+| 1 | `core/jobs/job_model.dart` | `UploadJob` + `JobStatus` enum |
+| 2 | `core/jobs/job_queue_service.dart` | Enqueue, listele, durum güncelle (SharedPreferences) |
+| 3 | `core/jobs/job_notification_service.dart` | flutter_local_notifications setup |
+| 4 | `core/jobs/job_worker.dart` | WorkManager callbackDispatcher |
+| 5 | `main.dart` güncellemesi | WorkManager.initialize() çağrısı eklenir |
+
+**Faz tamamlandı kriteri:** Bir test job kuyruğa eklenip arka planda çalıştırılabilir, bildirim gelir.
+
+---
+
+### Faz 5 — Generation Feature
 **Süre: ~60 dakika**
 
-Template kullanarak ve custom prompt ile görsel/video üretim talepleri.
+**Dosya sırası (her biri için onay beklenir):**
 
-**Yapılacaklar:**
-
-*Domain katmanı:*
-1. `generation_request_entity.dart` — tüm alanlar dahil (`template` nested entity)
-2. `generation_repository.dart` (abstract)
-3. `create_template_generation_usecase.dart`
-4. `create_custom_image_usecase.dart`
-5. `get_generation_requests_usecase.dart`
-6. `get_generation_detail_usecase.dart`
-7. `cancel_generation_usecase.dart`
-
-*Data katmanı:*
-8. `generation_request_model.dart`
-9. `generation_remote_datasource.dart` — multipart/form-data desteği
-10. `generation_repository_impl.dart`
-
-*Presentation katmanı:*
-11. `generation_provider.dart`
-12. `create_template_generation_screen.dart` — image picker dahil
-13. `create_custom_image_screen.dart`
-14. `generation_list_screen.dart`
-15. `generation_detail_screen.dart` — **polling ile status takibi** (5 sn interval)
-16. `generation_status_badge.dart` widget
+| # | Dosya | Katman |
+|---|---|---|
+| 1 | `domain/entities/generation_request_entity.dart` | Domain |
+| 2 | `domain/repositories/generation_repository.dart` | Domain (abstract) |
+| 3 | `domain/usecases/create_template_generation_usecase.dart` | Domain |
+| 4 | `domain/usecases/create_custom_image_usecase.dart` | Domain |
+| 5 | `domain/usecases/get_generation_requests_usecase.dart` | Domain |
+| 6 | `domain/usecases/get_generation_detail_usecase.dart` | Domain |
+| 7 | `domain/usecases/cancel_generation_usecase.dart` | Domain |
+| 8 | `data/models/generation_request_model.dart` | Data |
+| 9 | `data/datasources/generation_remote_datasource.dart` | Data |
+| 10 | `data/repositories/generation_repository_impl.dart` | Data |
+| 11 | `presentation/providers/generation_provider.dart` | Presentation |
+| 12 | `presentation/widgets/generation_status_badge.dart` | Presentation |
+| 13 | `presentation/screens/generation_list_screen.dart` | Presentation |
+| 14 | `presentation/screens/generation_detail_screen.dart` | Presentation (polling 5sn) |
+| 15 | `presentation/screens/create_template_generation_screen.dart` | Presentation **(job kullanır)** |
+| 16 | `presentation/screens/create_custom_image_screen.dart` | Presentation **(job kullanır)** |
 
 **Polling Notu:** Status `completed` veya `failed` olana kadar her 5 saniyede detail endpoint'i çağır.
 
-**Tamamlandı kriteri:** Template ile talep oluşturulur, liste görünür, detay sayfasında durum güncellenir.
+**Job Notu:** `create_*_screen` dosyalarında görsel seçildikten sonra `JobQueueService.enqueue()` çağrılır. API direkt çağrılmaz.
+
+**Faz tamamlandı kriteri:** Template ile talep oluşturulur, liste görünür, detay sayfasında durum güncellenir.
 
 ---
 
-### Faz 5 — Custom Video Feature
+### Faz 6 — Custom Video Feature
 **Süre: ~75 dakika**
 
-Custom video üretimi ve segment bazlı takip/düzenleme.
+**Dosya sırası (her biri için onay beklenir):**
 
-**Yapılacaklar:**
-
-*Domain katmanı:*
-1. `segment_entity.dart` — `latest_edit_request` nested entity dahil
-2. `custom_video_request_entity.dart`
-3. `custom_video_repository.dart` (abstract)
-4. `create_custom_video_usecase.dart`
-5. `get_custom_video_requests_usecase.dart`
-6. `get_custom_video_detail_usecase.dart`
-7. `edit_segment_usecase.dart`
-8. `delete_custom_video_usecase.dart`
-
-*Data katmanı:*
-9. `segment_model.dart`
-10. `custom_video_request_model.dart`
-11. `custom_video_remote_datasource.dart`
-12. `custom_video_repository_impl.dart`
-
-*Presentation katmanı:*
-13. `custom_video_provider.dart` — polling dahil
-14. `create_custom_video_screen.dart` — format seçimi, image picker
-15. `custom_video_list_screen.dart`
-16. `custom_video_detail_screen.dart` — segment listesi, overall progress
-17. `segment_card.dart` — video oynatma, düzenleme butonu
-18. `segment_edit_dialog.dart` — edit prompt girişi
+| # | Dosya | Katman |
+|---|---|---|
+| 1 | `domain/entities/segment_entity.dart` | Domain |
+| 2 | `domain/entities/custom_video_request_entity.dart` | Domain |
+| 3 | `domain/repositories/custom_video_repository.dart` | Domain (abstract) |
+| 4 | `domain/usecases/create_custom_video_usecase.dart` | Domain |
+| 5 | `domain/usecases/get_custom_video_requests_usecase.dart` | Domain |
+| 6 | `domain/usecases/get_custom_video_detail_usecase.dart` | Domain |
+| 7 | `domain/usecases/edit_segment_usecase.dart` | Domain |
+| 8 | `domain/usecases/delete_custom_video_usecase.dart` | Domain |
+| 9 | `data/models/segment_model.dart` | Data |
+| 10 | `data/models/custom_video_request_model.dart` | Data |
+| 11 | `data/datasources/custom_video_remote_datasource.dart` | Data |
+| 12 | `data/repositories/custom_video_repository_impl.dart` | Data |
+| 13 | `presentation/providers/custom_video_provider.dart` | Presentation |
+| 14 | `presentation/widgets/segment_card.dart` | Presentation |
+| 15 | `presentation/widgets/segment_edit_dialog.dart` | Presentation **(job kullanır)** |
+| 16 | `presentation/screens/custom_video_list_screen.dart` | Presentation |
+| 17 | `presentation/screens/custom_video_detail_screen.dart` | Presentation |
+| 18 | `presentation/screens/create_custom_video_screen.dart` | Presentation **(job kullanır)** |
 
 **Segment Kuralları:**
 - Sadece `completed` segmentlere düzenleme talebi gönderilebilir
 - `has_pending_edit: true` ise düzenleme butonu disabled
 - Overall progress bar: `(completed_segments / segments_count) * 100`
 
-**Tamamlandı kriteri:** Video talebi oluşturulur, segmentler listelenir, tamamlanan segmentlere düzenleme talebi gönderilebilir.
+**Faz tamamlandı kriteri:** Video talebi oluşturulur, segmentler listelenir, tamamlanan segmentlere düzenleme talebi gönderilebilir.
 
 ---
 
-### Faz 6 — Polish & UX
+### Faz 7 — Polish & UX
 **Süre: ~60 dakika**
 
-Hata yönetimi, loading state'leri ve kullanıcı deneyimi.
+**Dosya sırası (her biri için onay beklenir):**
 
-**Yapılacaklar:**
-1. Global error handling — 401 alınca otomatik logout
-2. Tüm ekranlarda loading indicator'lar
-3. Error state'leri için retry butonu
-4. Boş liste durumları (empty state widget)
-5. Pull-to-refresh
-6. Token expire kontrolü (interceptor seviyesinde)
-7. Network hatası için offline uyarısı
+| # | Görev | Açıklama |
+|---|---|---|
+| 1 | `auth_interceptor.dart` güncellemesi | 401 alınca otomatik logout |
+| 2 | `core/widgets/empty_state_widget.dart` | Boş liste için ortak widget |
+| 3 | `core/widgets/error_state_widget.dart` | Hata + retry butonu |
+| 4 | `core/widgets/loading_overlay.dart` | Global loading indicator |
+| 5 | `core/jobs/job_queue_service.dart` güncellemesi | Failed job retry |
+| 6 | Tüm list screen'lere pull-to-refresh eklenmesi | Her ekran ayrı onay |
 
-**Tamamlandı kriteri:** Hata durumları graceful handle edilir, kullanıcı bilgilendirilir.
+**Faz tamamlandı kriteri:** Hata durumları graceful handle edilir, kullanıcı bilgilendirilir.
 
 ---
 
 ## Yapay Zekaya Kod Yazdırma Kuralları
 
-Yapay zekaya her istekte aşağıdaki bağlamı ver:
+### 🔴 En Önemli Kural: Tek Dosya — Onay — Devam
+
+```
+Yapay zeka her seferinde YALNIZCA bir dosya yazar.
+Dosyayı yazdıktan sonra DURUR ve şunu söyler:
+
+  ✅ [dosya_yolu] tamamlandı.
+  Onaylarsanız sıradaki dosya olan [sonraki_dosya_yolu] ile devam edelim.
+
+Kullanıcı onay vermeden bir sonraki dosyaya GEÇİLMEZ.
+Kullanıcı onay vermeden klasör oluşturulmaz, boş dosya yaratılmaz.
+```
 
 ### Sistem Prompt Şablonu
 
@@ -582,30 +714,42 @@ KATMAN KURALLARI:
 - provider: AsyncNotifier, usecase çağırır
 - screen: sadece UI, iş mantığı yok
 
+BACKGROUND JOB KURALI:
+- Kullanıcının görsel yüklediği her form ekranında JobQueueService.enqueue() kullanılır
+- Görsel yükleme için API direkt çağrılmaz, WorkManager job'ı tetiklenir
+- Job kuyruğa alındıktan sonra ekran kapanır, kullanıcı beklemez
+
 RESULT TIPI: Result<T> = Success<T> | Failure — never throw
 
 API standart yanıtı:
 { "success": bool, "message": string?, "data": any, "locale": string }
+
+DOSYA KURALI:
+- Sadece istenen tek dosyayı yaz
+- Dosyayı yazdıktan sonra dur ve onay iste
+- Başka dosyaya dokunma, başka klasör oluşturma
 ```
 
 ### Her İstek İçin Format
 
 ```
 Şu fazı yazıyorum: [FAZ NUMARASI]
-Şu adımı yazıyorum: [ADIM NUMARASI]
-Dosya: [DOSYA YOLU]
+Şu dosyayı yazıyorum: [DOSYA YOLU]
+Sıradaki dosya: [SONRAKİ DOSYA YOLU] — ama onu henüz yazma
 
-[Varsa bağımlı olduğu dosyaların içeriği]
+Bağımlı dosyalar (context):
+[Varsa bağımlı dosyaların içeriği buraya yapıştırılır]
 
-Sadece bu dosyayı yaz. Başka dosyaya dokunma.
+Sadece [DOSYA YOLU] dosyasını yaz. Bitince dur ve onay iste.
 ```
 
 ### Önemli Notlar
 
-- **Bir seferde tek dosya iste.** Çoklu dosya istersen yapay zeka katman kurallarını karıştırır.
+- **Tek seferde tek dosya.** Çoklu dosya istersen yapay zeka katman kurallarını karıştırır.
 - **Bağımlı dosyaları context olarak ver.** Örneğin `repository_impl` yazarken `repository abstract`'ı ve `datasource`'u yapıştır.
 - **Code generation dosyalarını (`.g.dart`, `.freezed.dart`) elle yazma.** `build_runner` çalıştırır.
 - **Her fazın sonunda `flutter run` yap.** Faz içinde biriken hataları sonda çözmek yerine anında yakala.
+- **Job worker dosyasını verirken** `api_constants.dart` ve `secure_storage.dart` context olarak ekle.
 
 ---
 
@@ -648,4 +792,4 @@ lib/core/constants/env.g.dart
 
 ---
 
-*Son güncelleme: Faz planı v1.0*
+*Son güncelleme: Faz planı v2.0 — Background job + tek dosya onay akışı*
