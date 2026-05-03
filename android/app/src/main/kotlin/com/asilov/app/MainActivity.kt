@@ -1,4 +1,4 @@
-package com.example.asilov
+package com.asilov.app
 
 import io.flutter.embedding.android.FlutterActivity
 
