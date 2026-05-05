@@ -1,0 +1,74 @@
+{
+  "@@locale": "tr",
+
+  "appName": "Asilov",
+
+  "loginTitle": "Giriş Yap",
+  "loginSubtitle": "Hesabınıza giriş yapın",
+  "loginButton": "Giriş Yap",
+
+  "registerTitle": "Kayıt Ol",
+  "registerSubtitle": "Yeni hesap oluşturun",
+  "registerButton": "Kayıt Ol",
+  "createAccount": "Hesap Oluştur",
+
+  "email": "E-posta",
+  "emailHint": "ornek@email.com",
+  "emailRequired": "E-posta zorunludur",
+  "emailInvalid": "Geçerli bir e-posta girin",
+
+  "password": "Şifre",
+  "passwordHint": "••••••••",
+  "passwordRequired": "Şifre zorunludur",
+  "passwordMinLength": "En az 8 karakter olmalıdır",
+
+  "passwordConfirm": "Şifre Tekrar",
+  "passwordConfirmRequired": "Şifre tekrar zorunludur",
+  "passwordConfirmMismatch": "Şifreler eşleşmiyor",
+
+  "forgotPassword": "Şifremi Unuttum",
+  "forgotPasswordTitle": "Şifremi Unuttum",
+  "forgotPasswordSubtitle": "E-posta adresinize sıfırlama bağlantısı göndereceğiz",
+  "sendResetLink": "Sıfırlama Bağlantısı Gönder",
+
+  "resetPassword": "Şifremi Sıfırla",
+  "resetPasswordTitle": "Şifre Sıfırla",
+  "resetPasswordButton": "Şifremi Sıfırla",
+
+  "firstName": "Ad",
+  "firstNameHint": "Ahmet",
+  "firstNameRequired": "Ad zorunludur",
+
+  "lastName": "Soyad",
+  "lastNameHint": "Yılmaz",
+  "lastNameRequired": "Soyad zorunludur",
+
+  "phone": "Telefon",
+  "phoneHint": "5551234567",
+  "phoneRequired": "Telefon zorunludur",
+
+  "countryCode": "Ülke Kodu",
+  "selectCountryCode": "Ülke Kodu Seçin",
+
+  "noAccount": "Hesabınız yok mu?",
+  "haveAccount": "Zaten hesabınız var mı?",
+
+  "registerSuccess": "Kayıt başarılı! Lütfen giriş yapın.",
+
+  "required": "Zorunlu",
+
+  "consentText": "Kayıt olarak",
+  "consentTerms": "Kullanım Şartları",
+  "consentAnd": "ve",
+  "consentPrivacy": "Gizlilik Politikası",
+  "consentEnd": "'nı kabul etmiş olursunuz.",
+
+  "welcomeTitle": "Hoş Geldiniz",
+  "welcomeSubtitle": "Yolculuğunuz burada başlıyor.",
+  "logout": "Çıkış Yap",
+
+  "forgotPasswordSubtitle": "E-posta adresinize sıfırlama bağlantısı göndereceğiz",
+  "forgotPasswordSuccessTitle": "E-postanızı Kontrol Edin",
+  "forgotPasswordSuccessMessage": "E-postanızdaki bağlantıya tıklayarak şifrenizi sıfırlayın, ardından geri dönüp giriş yapın.",
+  "backToLogin": "Girişe Dön"
+}

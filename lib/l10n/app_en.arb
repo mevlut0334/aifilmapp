@@ -1,0 +1,74 @@
+{
+  "@@locale": "en",
+
+  "appName": "Asilov",
+
+  "loginTitle": "Login",
+  "loginSubtitle": "Sign in to your account",
+  "loginButton": "Login",
+
+  "registerTitle": "Register",
+  "registerSubtitle": "Create a new account",
+  "registerButton": "Register",
+  "createAccount": "Create Account",
+
+  "email": "Email",
+  "emailHint": "example@email.com",
+  "emailRequired": "Email is required",
+  "emailInvalid": "Please enter a valid email",
+
+  "password": "Password",
+  "passwordHint": "••••••••",
+  "passwordRequired": "Password is required",
+  "passwordMinLength": "Must be at least 8 characters",
+
+  "passwordConfirm": "Confirm Password",
+  "passwordConfirmRequired": "Password confirmation is required",
+  "passwordConfirmMismatch": "Passwords do not match",
+
+  "forgotPassword": "Forgot Password",
+  "forgotPasswordTitle": "Forgot Password",
+  "forgotPasswordSubtitle": "We will send a reset link to your email address",
+  "sendResetLink": "Send Reset Link",
+
+  "resetPassword": "Reset Password",
+  "resetPasswordTitle": "Reset Password",
+  "resetPasswordButton": "Reset Password",
+
+  "firstName": "First Name",
+  "firstNameHint": "John",
+  "firstNameRequired": "First name is required",
+
+  "lastName": "Last Name",
+  "lastNameHint": "Doe",
+  "lastNameRequired": "Last name is required",
+
+  "phone": "Phone",
+  "phoneHint": "5551234567",
+  "phoneRequired": "Phone is required",
+
+  "countryCode": "Country Code",
+  "selectCountryCode": "Select Country Code",
+
+  "noAccount": "Don't have an account?",
+  "haveAccount": "Already have an account?",
+
+  "registerSuccess": "Registration successful! Please login.",
+
+  "required": "Required",
+
+  "consentText": "By registering you agree to our",
+  "consentTerms": "Terms of Service",
+  "consentAnd": "and",
+  "consentPrivacy": "Privacy Policy",
+  "consentEnd": ".",
+
+  "welcomeTitle": "Welcome",
+  "welcomeSubtitle": "Your journey begins here.",
+  "logout": "Logout",
+
+  "forgotPasswordSubtitle": "We will send a reset link to your email address",
+  "forgotPasswordSuccessTitle": "Check Your Email",
+  "forgotPasswordSuccessMessage": "Click the link in your email to reset your password, then come back and login.",
+  "backToLogin": "Back to Login"
+}
