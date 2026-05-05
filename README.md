@@ -624,7 +624,7 @@ Bu fazda sadece temel kurulum yapılır. Boş dosya/klasör yapısı oluşturulm
 | 15 | `presentation/screens/create_template_generation_screen.dart` | Presentation **(job kullanır)** |
 | 16 | `presentation/screens/create_custom_image_screen.dart` | Presentation **(job kullanır)** |
 
-**Polling Notu:** Status `completed` veya `failed` olana kadar her 5 saniyede detail endpoint'i çağır.
+**Polling Notu:** Status `completed` veya `failed` admin tarafından güncellendiğinde güncellenir.
 
 **Job Notu:** `create_*_screen` dosyalarında görsel seçildikten sonra `JobQueueService.enqueue()` çağrılır. API direkt çağrılmaz.
 
