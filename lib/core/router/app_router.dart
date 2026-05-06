@@ -7,6 +7,7 @@ import '../../features/auth/presentation/screens/forgot_password_screen.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/register_screen.dart';
 import '../../features/home/presentation/screens/home_screen.dart';
+import '../../features/templates/presentation/screens/template_swipe_screen.dart';
 import '../widgets/app_shell.dart';
 
 // ─── Route Sabitleri ──────────────────────────────────────────────────────────
@@ -127,12 +128,12 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const ForgotPasswordScreen(),
       ),
 
-      // Template swipe (shell dışı — tam ekran)
+      // Template swipe (shell dışı — tam ekran, giriş gerektirmez)
       GoRoute(
         path: '${AppRoutes.templateSwipe}/:uuid',
         builder: (context, state) {
           final uuid = state.pathParameters['uuid']!;
-          return _PlaceholderScreen(title: 'Template Swipe: $uuid');
+          return TemplateSwipeScreen(initialUuid: uuid);
         },
       ),
 
