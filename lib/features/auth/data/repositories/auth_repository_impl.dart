@@ -41,7 +41,8 @@ class AuthRepositoryImpl implements AuthRepository {
     required String phone,
   }) async {
     try {
-      final user = await _datasource.register(
+      // 1. Kayıt ol
+      await _datasource.register(
         firstName: firstName,
         lastName: lastName,
         email: email,
@@ -50,7 +51,18 @@ class AuthRepositoryImpl implements AuthRepository {
         countryCode: countryCode,
         phone: phone,
       );
-      return Success(user.toEntity());
+
+      // 2. Kayıt başarılı → aynı bilgilerle login yap
+      final loginResponse = await _datasource.login(
+        email: email,
+        password: password,
+      );
+      await _secureStorage.saveToken(loginResponse.token);
+      final profile = await _datasource.getProfile();
+      return Success(profile.toEntity());
+
+    } on UnauthorizedException catch (e) {
+      return Failure(e.message, statusCode: 401);
     } on ServerException catch (e) {
       return Failure(e.message, statusCode: e.statusCode);
     } catch (e) {

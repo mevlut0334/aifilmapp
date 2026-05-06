@@ -24,7 +24,7 @@ class AuthRemoteDatasource {
     }
   }
 
-  Future<UserModel> register({
+  Future<void> register({
     required String firstName,
     required String lastName,
     required String email,
@@ -34,7 +34,7 @@ class AuthRemoteDatasource {
     required String phone,
   }) async {
     try {
-      final response = await _dio.post(
+      await _dio.post(
         ApiConstants.register,
         data: {
           'first_name': firstName,
@@ -46,7 +46,6 @@ class AuthRemoteDatasource {
           'phone': phone,
         },
       );
-      return UserModel.fromJson(response.data['data']['user']);
     } on DioException catch (e) {
       _handleError(e);
     }

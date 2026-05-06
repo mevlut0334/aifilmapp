@@ -236,8 +236,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         TextFormField(
                           controller: _emailController,
                           keyboardType: TextInputType.emailAddress,
-                          style: const TextStyle(
-                              color: AppColors.textPrimary),
+                          style: const TextStyle(color: AppColors.textPrimary),
                           decoration: _inputDecoration(
                             hint: l10n.emailHint,
                             prefixIcon: Icons.email_outlined,
@@ -283,15 +282,28 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                       hint: '+--',
                                       prefixIcon: Icons.flag_outlined,
                                     ),
+                                    // SONRA — ülke adı + numara gösteriyor
+                                    selectedItemBuilder: (context) => _countries
+                                        .map(
+                                          (c) => Text(
+                                            c['dial_code']
+                                                as String, // seçili halde dar alanda sadece +90
+                                            style: const TextStyle(
+                                              color: AppColors.textPrimary,
+                                              fontSize: 14,
+                                            ),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        )
+                                        .toList(),
                                     items: _countriesLoading
                                         ? []
                                         : _countries
                                             .map(
                                               (c) => DropdownMenuItem<String>(
-                                                value: c['dial_code']
-                                                    as String,
+                                                value: c['dial_code'] as String,
                                                 child: Text(
-                                                  c['dial_code'] as String,
+                                                  '${c['name']} (${c['dial_code']})', // ← Afghanistan (+93)
                                                   style: const TextStyle(
                                                     color:
                                                         AppColors.textPrimary,
@@ -349,8 +361,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         TextFormField(
                           controller: _passwordController,
                           obscureText: _obscurePassword,
-                          style: const TextStyle(
-                              color: AppColors.textPrimary),
+                          style: const TextStyle(color: AppColors.textPrimary),
                           decoration: _inputDecoration(
                             hint: l10n.passwordHint,
                             prefixIcon: Icons.lock_outline,
@@ -362,8 +373,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                 color: AppColors.textDisabled,
                                 size: 20,
                               ),
-                              onPressed: () => setState(() =>
-                                  _obscurePassword = !_obscurePassword),
+                              onPressed: () => setState(
+                                  () => _obscurePassword = !_obscurePassword),
                             ),
                           ),
                           validator: (v) {
@@ -384,8 +395,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         TextFormField(
                           controller: _passwordConfirmController,
                           obscureText: _obscurePasswordConfirm,
-                          style: const TextStyle(
-                              color: AppColors.textPrimary),
+                          style: const TextStyle(color: AppColors.textPrimary),
                           decoration: _inputDecoration(
                             hint: l10n.passwordHint,
                             prefixIcon: Icons.lock_outline,
@@ -471,8 +481,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                           width: double.infinity,
                           height: 52,
                           child: ElevatedButton(
-                            onPressed:
-                                authState.isLoading ? null : _submit,
+                            onPressed: authState.isLoading ? null : _submit,
                             style: ElevatedButton.styleFrom(
                               backgroundColor: AppColors.gold,
                               foregroundColor: AppColors.background,
@@ -558,10 +567,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   }) {
     return InputDecoration(
       hintText: hint,
-      hintStyle: const TextStyle(
-          color: AppColors.textDisabled, fontSize: 14),
-      prefixIcon:
-          Icon(prefixIcon, color: AppColors.textDisabled, size: 20),
+      hintStyle: const TextStyle(color: AppColors.textDisabled, fontSize: 14),
+      prefixIcon: Icon(prefixIcon, color: AppColors.textDisabled, size: 20),
       suffixIcon: suffix,
       filled: true,
       fillColor: const Color(0xFF1A1A1A),
@@ -579,13 +586,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       ),
       focusedErrorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide:
-            const BorderSide(color: Colors.redAccent, width: 1.5),
+        borderSide: const BorderSide(color: Colors.redAccent, width: 1.5),
       ),
-      errorStyle:
-          const TextStyle(color: Colors.redAccent, fontSize: 12),
-      contentPadding:
-          const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      errorStyle: const TextStyle(color: Colors.redAccent, fontSize: 12),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
     );
   }
 }
