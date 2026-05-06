@@ -165,4 +165,64 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get backToLogin => 'Back to Login';
+
+  @override
+  String get navHome => 'Home';
+
+  @override
+  String get navTemplates => 'My Templates';
+
+  @override
+  String get navImages => 'My Images';
+
+  @override
+  String get navVideos => 'My Videos';
+
+  @override
+  String get packages => 'Packages';
+
+  @override
+  String get aboutUs => 'About Us';
+
+  @override
+  String get drawerProfile => 'Profile';
+
+  @override
+  String get tokens => 'tokens';
+
+  @override
+  String get buyTokens => 'Buy Tokens';
+
+  @override
+  String get useTemplate => 'Use Template';
+
+  @override
+  String get loginToUse => 'Login to Use';
+
+  @override
+  String get swipeHint => 'Swipe up';
+
+  @override
+  String get swipeBack => 'Back';
+
+  @override
+  String get createImage => 'Create Image';
+
+  @override
+  String get createVideo => 'Create Video';
+
+  @override
+  String get featuredTemplates => 'Featured Templates';
+
+  @override
+  String get noTemplates => 'No templates found';
+
+  @override
+  String get noImages => 'No images yet';
+
+  @override
+  String get noVideos => 'No videos yet';
+
+  @override
+  String get retry => 'Retry';
 }

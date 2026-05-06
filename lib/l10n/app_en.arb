@@ -67,8 +67,33 @@
   "welcomeSubtitle": "Your journey begins here.",
   "logout": "Logout",
 
-  "forgotPasswordSubtitle": "We will send a reset link to your email address",
   "forgotPasswordSuccessTitle": "Check Your Email",
   "forgotPasswordSuccessMessage": "Click the link in your email to reset your password, then come back and login.",
-  "backToLogin": "Back to Login"
+  "backToLogin": "Back to Login",
+
+  "navHome": "Home",
+  "navTemplates": "My Templates",
+  "navImages": "My Images",
+  "navVideos": "My Videos",
+
+  "packages": "Packages",
+  "aboutUs": "About Us",
+  "drawerProfile": "Profile",
+
+  "tokens": "tokens",
+  "buyTokens": "Buy Tokens",
+
+  "useTemplate": "Use Template",
+  "loginToUse": "Login to Use",
+  "swipeHint": "Swipe up",
+  "swipeBack": "Back",
+
+  "createImage": "Create Image",
+  "createVideo": "Create Video",
+  "featuredTemplates": "Featured Templates",
+
+  "noTemplates": "No templates found",
+  "noImages": "No images yet",
+  "noVideos": "No videos yet",
+  "retry": "Retry"
 }

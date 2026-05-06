@@ -67,8 +67,33 @@
   "welcomeSubtitle": "Yolculuğunuz burada başlıyor.",
   "logout": "Çıkış Yap",
 
-  "forgotPasswordSubtitle": "E-posta adresinize sıfırlama bağlantısı göndereceğiz",
   "forgotPasswordSuccessTitle": "E-postanızı Kontrol Edin",
   "forgotPasswordSuccessMessage": "E-postanızdaki bağlantıya tıklayarak şifrenizi sıfırlayın, ardından geri dönüp giriş yapın.",
-  "backToLogin": "Girişe Dön"
+  "backToLogin": "Girişe Dön",
+
+  "navHome": "Ana Sayfa",
+  "navTemplates": "Şablonlarım",
+  "navImages": "Görsellerim",
+  "navVideos": "Videolarım",
+
+  "packages": "Paketler",
+  "aboutUs": "Hakkımızda",
+  "drawerProfile": "Profil",
+
+  "tokens": "token",
+  "buyTokens": "Token Satın Al",
+
+  "useTemplate": "Şablonu Kullan",
+  "loginToUse": "Kullanmak için Giriş Yap",
+  "swipeHint": "Yukarı kaydır",
+  "swipeBack": "Geri",
+
+  "createImage": "Görsel Oluştur",
+  "createVideo": "Video Oluştur",
+  "featuredTemplates": "Öne Çıkan Şablonlar",
+
+  "noTemplates": "Şablon bulunamadı",
+  "noImages": "Henüz görsel yok",
+  "noVideos": "Henüz video yok",
+  "retry": "Tekrar Dene"
 }

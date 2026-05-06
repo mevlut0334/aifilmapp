@@ -99,7 +99,20 @@ class AuthNotifier extends Notifier<AuthState> {
     final token = await storage.getToken();
 
     if (token != null && token.isNotEmpty) {
-      state = state.copyWith(status: AuthStatus.authenticated);
+      try {
+        final user = await ref
+            .read(authRemoteDatasourceProvider)
+            .getProfile()
+            .then((m) => m.toEntity());
+        state = state.copyWith(
+          status: AuthStatus.authenticated,
+          user: user,
+        );
+      } catch (_) {
+        // Token geçersiz veya süresi dolmuş → temizle
+        await storage.deleteToken();
+        state = state.copyWith(status: AuthStatus.unauthenticated);
+      }
     } else {
       state = state.copyWith(status: AuthStatus.unauthenticated);
     }

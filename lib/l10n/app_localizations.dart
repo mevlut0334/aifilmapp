@@ -409,6 +409,126 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Girişe Dön'**
   String get backToLogin;
+
+  /// No description provided for @navHome.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ana Sayfa'**
+  String get navHome;
+
+  /// No description provided for @navTemplates.
+  ///
+  /// In tr, this message translates to:
+  /// **'Şablonlarım'**
+  String get navTemplates;
+
+  /// No description provided for @navImages.
+  ///
+  /// In tr, this message translates to:
+  /// **'Görsellerim'**
+  String get navImages;
+
+  /// No description provided for @navVideos.
+  ///
+  /// In tr, this message translates to:
+  /// **'Videolarım'**
+  String get navVideos;
+
+  /// No description provided for @packages.
+  ///
+  /// In tr, this message translates to:
+  /// **'Paketler'**
+  String get packages;
+
+  /// No description provided for @aboutUs.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hakkımızda'**
+  String get aboutUs;
+
+  /// No description provided for @drawerProfile.
+  ///
+  /// In tr, this message translates to:
+  /// **'Profil'**
+  String get drawerProfile;
+
+  /// No description provided for @tokens.
+  ///
+  /// In tr, this message translates to:
+  /// **'token'**
+  String get tokens;
+
+  /// No description provided for @buyTokens.
+  ///
+  /// In tr, this message translates to:
+  /// **'Token Satın Al'**
+  String get buyTokens;
+
+  /// No description provided for @useTemplate.
+  ///
+  /// In tr, this message translates to:
+  /// **'Şablonu Kullan'**
+  String get useTemplate;
+
+  /// No description provided for @loginToUse.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kullanmak için Giriş Yap'**
+  String get loginToUse;
+
+  /// No description provided for @swipeHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yukarı kaydır'**
+  String get swipeHint;
+
+  /// No description provided for @swipeBack.
+  ///
+  /// In tr, this message translates to:
+  /// **'Geri'**
+  String get swipeBack;
+
+  /// No description provided for @createImage.
+  ///
+  /// In tr, this message translates to:
+  /// **'Görsel Oluştur'**
+  String get createImage;
+
+  /// No description provided for @createVideo.
+  ///
+  /// In tr, this message translates to:
+  /// **'Video Oluştur'**
+  String get createVideo;
+
+  /// No description provided for @featuredTemplates.
+  ///
+  /// In tr, this message translates to:
+  /// **'Öne Çıkan Şablonlar'**
+  String get featuredTemplates;
+
+  /// No description provided for @noTemplates.
+  ///
+  /// In tr, this message translates to:
+  /// **'Şablon bulunamadı'**
+  String get noTemplates;
+
+  /// No description provided for @noImages.
+  ///
+  /// In tr, this message translates to:
+  /// **'Henüz görsel yok'**
+  String get noImages;
+
+  /// No description provided for @noVideos.
+  ///
+  /// In tr, this message translates to:
+  /// **'Henüz video yok'**
+  String get noVideos;
+
+  /// No description provided for @retry.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tekrar Dene'**
+  String get retry;
 }
 
 class _AppLocalizationsDelegate

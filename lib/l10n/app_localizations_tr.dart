@@ -165,4 +165,64 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get backToLogin => 'Girişe Dön';
+
+  @override
+  String get navHome => 'Ana Sayfa';
+
+  @override
+  String get navTemplates => 'Şablonlarım';
+
+  @override
+  String get navImages => 'Görsellerim';
+
+  @override
+  String get navVideos => 'Videolarım';
+
+  @override
+  String get packages => 'Paketler';
+
+  @override
+  String get aboutUs => 'Hakkımızda';
+
+  @override
+  String get drawerProfile => 'Profil';
+
+  @override
+  String get tokens => 'token';
+
+  @override
+  String get buyTokens => 'Token Satın Al';
+
+  @override
+  String get useTemplate => 'Şablonu Kullan';
+
+  @override
+  String get loginToUse => 'Kullanmak için Giriş Yap';
+
+  @override
+  String get swipeHint => 'Yukarı kaydır';
+
+  @override
+  String get swipeBack => 'Geri';
+
+  @override
+  String get createImage => 'Görsel Oluştur';
+
+  @override
+  String get createVideo => 'Video Oluştur';
+
+  @override
+  String get featuredTemplates => 'Öne Çıkan Şablonlar';
+
+  @override
+  String get noTemplates => 'Şablon bulunamadı';
+
+  @override
+  String get noImages => 'Henüz görsel yok';
+
+  @override
+  String get noVideos => 'Henüz video yok';
+
+  @override
+  String get retry => 'Tekrar Dene';
 }
