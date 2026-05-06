@@ -1,12 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:workmanager/workmanager.dart';
 import 'package:asilov/l10n/app_localizations.dart';
 
 import 'core/constants/app_colors.dart';
+import 'core/jobs/job_notification_service.dart';
+import 'core/jobs/job_worker.dart';
 import 'core/router/app_router.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Bildirim servisini başlat
+  await JobNotificationService.instance.initialize();
+
+  // WorkManager'ı başlat
+  await Workmanager().initialize(
+    callbackDispatcher,
+  );
+
   runApp(
     const ProviderScope(
       child: MyApp(),

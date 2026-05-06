@@ -6,6 +6,8 @@ import '../../features/auth/presentation/providers/auth_provider.dart';
 import '../../features/auth/presentation/screens/forgot_password_screen.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/register_screen.dart';
+import '../../features/generation/presentation/screens/create_template_generation_screen.dart';
+import '../../features/generation/presentation/screens/generation_list_screen.dart';
 import '../../features/home/presentation/screens/home_screen.dart';
 import '../../features/templates/presentation/screens/template_swipe_screen.dart';
 import '../widgets/app_shell.dart';
@@ -26,8 +28,9 @@ abstract class AppRoutes {
   static const myVideos        = '/my-videos';
 
   // Giriş gerektiren rotalar
-  static const createImage     = '/create-image';
-  static const createVideo     = '/create-video';
+  static const createImage              = '/create-image';
+  static const createVideo              = '/create-video';
+  static const createTemplateGeneration = '/create-template-generation';
 
   // Genel rotalar
   static const templateSwipe   = '/template-swipe';
@@ -45,6 +48,7 @@ const _protectedRoutes = [
   AppRoutes.myVideos,
   AppRoutes.createImage,
   AppRoutes.createVideo,
+  AppRoutes.createTemplateGeneration,
 ];
 
 // ─── Bottom nav index hesaplama ───────────────────────────────────────────────
@@ -149,6 +153,15 @@ final routerProvider = Provider<GoRouter>((ref) {
             const _PlaceholderScreen(title: 'Video Oluştur'),
       ),
 
+      // Şablon ile talep oluşturma (shell dışı — tam ekran, giriş zorunlu)
+      GoRoute(
+        path: '${AppRoutes.createTemplateGeneration}/:templateUuid',
+        builder: (context, state) {
+          final templateUuid = state.pathParameters['templateUuid']!;
+          return CreateTemplateGenerationScreen(templateUuid: templateUuid);
+        },
+      ),
+
       // Drawer rotaları (shell dışı)
       GoRoute(
         path: AppRoutes.packages,
@@ -182,11 +195,13 @@ final routerProvider = Provider<GoRouter>((ref) {
             path: AppRoutes.home,
             builder: (context, state) => const HomeScreen(),
           ),
+
+          // ✅ Talep listesi — GenerationListScreen'e bağlandı
           GoRoute(
             path: AppRoutes.myTemplates,
-            builder: (context, state) =>
-                const _PlaceholderScreen(title: 'Şablonlarım'),
+            builder: (context, state) => const GenerationListScreen(),
           ),
+
           GoRoute(
             path: AppRoutes.myImages,
             builder: (context, state) =>

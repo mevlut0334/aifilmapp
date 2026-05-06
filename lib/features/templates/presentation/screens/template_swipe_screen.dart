@@ -462,9 +462,8 @@ class _TemplateSwipeScreenState extends ConsumerState<TemplateSwipeScreen> {
             label: isAuthenticated ? l10n.useTemplate : l10n.loginToUse,
             onTap: () {
               if (isAuthenticated) {
-                // TODO: Şablon oluşturma ekranı hazır olduğunda güncelle:
-                // context.push(AppRoutes.createTemplateGeneration, extra: template);
-                context.push(AppRoutes.createImage);
+                context.push(
+                    '${AppRoutes.createTemplateGeneration}/${template.uuid}');
               } else {
                 context.push(AppRoutes.login);
               }

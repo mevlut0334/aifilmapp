@@ -95,5 +95,31 @@
   "noTemplates": "No templates found",
   "noImages": "No images yet",
   "noVideos": "No videos yet",
-  "retry": "Retry"
+  "retry": "Retry",
+
+  "myRequests": "My Requests",
+  "requestPending": "Pending",
+  "requestProcessing": "Processing",
+  "requestCompleted": "Completed",
+  "requestFailed": "Failed",
+  "download": "Download",
+  "noRequests": "No requests yet",
+  "requestDate": "Date",
+  "requestProgress": "Progress",
+  "requestType": "Type",
+  "downloadError": "Download failed" ,
+
+  "createRequest": "Create Request",
+"selectPhoto": "Select Photo",
+"changePhoto": "Change Photo",
+"photoRequired": "Photo is required",
+"requestQueued": "Request queued successfully",
+"outputType": "Output Type",
+"outputImage": "Image",
+"outputVideo": "Video",
+"orientationOptional": "Orientation (Optional)",
+"orientationAny": "Any",
+"portrait": "Portrait",
+"landscape": "Landscape",
+"square": "Square"
 }

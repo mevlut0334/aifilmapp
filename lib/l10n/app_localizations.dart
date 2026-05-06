@@ -529,6 +529,150 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Tekrar Dene'**
   String get retry;
+
+  /// No description provided for @myRequests.
+  ///
+  /// In tr, this message translates to:
+  /// **'Taleplerim'**
+  String get myRequests;
+
+  /// No description provided for @requestPending.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bekliyor'**
+  String get requestPending;
+
+  /// No description provided for @requestProcessing.
+  ///
+  /// In tr, this message translates to:
+  /// **'İşleniyor'**
+  String get requestProcessing;
+
+  /// No description provided for @requestCompleted.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tamamlandı'**
+  String get requestCompleted;
+
+  /// No description provided for @requestFailed.
+  ///
+  /// In tr, this message translates to:
+  /// **'Başarısız'**
+  String get requestFailed;
+
+  /// No description provided for @download.
+  ///
+  /// In tr, this message translates to:
+  /// **'İndir'**
+  String get download;
+
+  /// No description provided for @noRequests.
+  ///
+  /// In tr, this message translates to:
+  /// **'Henüz talep yok'**
+  String get noRequests;
+
+  /// No description provided for @requestDate.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tarih'**
+  String get requestDate;
+
+  /// No description provided for @requestProgress.
+  ///
+  /// In tr, this message translates to:
+  /// **'İlerleme'**
+  String get requestProgress;
+
+  /// No description provided for @requestType.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tip'**
+  String get requestType;
+
+  /// No description provided for @downloadError.
+  ///
+  /// In tr, this message translates to:
+  /// **'İndirme başarısız'**
+  String get downloadError;
+
+  /// No description provided for @createRequest.
+  ///
+  /// In tr, this message translates to:
+  /// **'Talep Oluştur'**
+  String get createRequest;
+
+  /// No description provided for @selectPhoto.
+  ///
+  /// In tr, this message translates to:
+  /// **'Fotoğraf Seç'**
+  String get selectPhoto;
+
+  /// No description provided for @changePhoto.
+  ///
+  /// In tr, this message translates to:
+  /// **'Fotoğrafı Değiştir'**
+  String get changePhoto;
+
+  /// No description provided for @photoRequired.
+  ///
+  /// In tr, this message translates to:
+  /// **'Fotoğraf zorunludur'**
+  String get photoRequired;
+
+  /// No description provided for @requestQueued.
+  ///
+  /// In tr, this message translates to:
+  /// **'Talep başarıyla kuyruğa alındı'**
+  String get requestQueued;
+
+  /// No description provided for @outputType.
+  ///
+  /// In tr, this message translates to:
+  /// **'Çıktı Tipi'**
+  String get outputType;
+
+  /// No description provided for @outputImage.
+  ///
+  /// In tr, this message translates to:
+  /// **'Görsel'**
+  String get outputImage;
+
+  /// No description provided for @outputVideo.
+  ///
+  /// In tr, this message translates to:
+  /// **'Video'**
+  String get outputVideo;
+
+  /// No description provided for @orientationOptional.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yön (İsteğe Bağlı)'**
+  String get orientationOptional;
+
+  /// No description provided for @orientationAny.
+  ///
+  /// In tr, this message translates to:
+  /// **'Herhangi'**
+  String get orientationAny;
+
+  /// No description provided for @portrait.
+  ///
+  /// In tr, this message translates to:
+  /// **'Dikey'**
+  String get portrait;
+
+  /// No description provided for @landscape.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yatay'**
+  String get landscape;
+
+  /// No description provided for @square.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kare'**
+  String get square;
 }
 
 class _AppLocalizationsDelegate

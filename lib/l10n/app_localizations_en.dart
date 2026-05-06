@@ -225,4 +225,76 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get retry => 'Retry';
+
+  @override
+  String get myRequests => 'My Requests';
+
+  @override
+  String get requestPending => 'Pending';
+
+  @override
+  String get requestProcessing => 'Processing';
+
+  @override
+  String get requestCompleted => 'Completed';
+
+  @override
+  String get requestFailed => 'Failed';
+
+  @override
+  String get download => 'Download';
+
+  @override
+  String get noRequests => 'No requests yet';
+
+  @override
+  String get requestDate => 'Date';
+
+  @override
+  String get requestProgress => 'Progress';
+
+  @override
+  String get requestType => 'Type';
+
+  @override
+  String get downloadError => 'Download failed';
+
+  @override
+  String get createRequest => 'Create Request';
+
+  @override
+  String get selectPhoto => 'Select Photo';
+
+  @override
+  String get changePhoto => 'Change Photo';
+
+  @override
+  String get photoRequired => 'Photo is required';
+
+  @override
+  String get requestQueued => 'Request queued successfully';
+
+  @override
+  String get outputType => 'Output Type';
+
+  @override
+  String get outputImage => 'Image';
+
+  @override
+  String get outputVideo => 'Video';
+
+  @override
+  String get orientationOptional => 'Orientation (Optional)';
+
+  @override
+  String get orientationAny => 'Any';
+
+  @override
+  String get portrait => 'Portrait';
+
+  @override
+  String get landscape => 'Landscape';
+
+  @override
+  String get square => 'Square';
 }

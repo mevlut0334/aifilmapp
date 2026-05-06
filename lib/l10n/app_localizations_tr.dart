@@ -225,4 +225,76 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get retry => 'Tekrar Dene';
+
+  @override
+  String get myRequests => 'Taleplerim';
+
+  @override
+  String get requestPending => 'Bekliyor';
+
+  @override
+  String get requestProcessing => 'İşleniyor';
+
+  @override
+  String get requestCompleted => 'Tamamlandı';
+
+  @override
+  String get requestFailed => 'Başarısız';
+
+  @override
+  String get download => 'İndir';
+
+  @override
+  String get noRequests => 'Henüz talep yok';
+
+  @override
+  String get requestDate => 'Tarih';
+
+  @override
+  String get requestProgress => 'İlerleme';
+
+  @override
+  String get requestType => 'Tip';
+
+  @override
+  String get downloadError => 'İndirme başarısız';
+
+  @override
+  String get createRequest => 'Talep Oluştur';
+
+  @override
+  String get selectPhoto => 'Fotoğraf Seç';
+
+  @override
+  String get changePhoto => 'Fotoğrafı Değiştir';
+
+  @override
+  String get photoRequired => 'Fotoğraf zorunludur';
+
+  @override
+  String get requestQueued => 'Talep başarıyla kuyruğa alındı';
+
+  @override
+  String get outputType => 'Çıktı Tipi';
+
+  @override
+  String get outputImage => 'Görsel';
+
+  @override
+  String get outputVideo => 'Video';
+
+  @override
+  String get orientationOptional => 'Yön (İsteğe Bağlı)';
+
+  @override
+  String get orientationAny => 'Herhangi';
+
+  @override
+  String get portrait => 'Dikey';
+
+  @override
+  String get landscape => 'Yatay';
+
+  @override
+  String get square => 'Kare';
 }

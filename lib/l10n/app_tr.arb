@@ -95,5 +95,31 @@
   "noTemplates": "Şablon bulunamadı",
   "noImages": "Henüz görsel yok",
   "noVideos": "Henüz video yok",
-  "retry": "Tekrar Dene"
+  "retry": "Tekrar Dene",
+
+  "myRequests": "Taleplerim",
+  "requestPending": "Bekliyor",
+  "requestProcessing": "İşleniyor",
+  "requestCompleted": "Tamamlandı",
+  "requestFailed": "Başarısız",
+  "download": "İndir",
+  "noRequests": "Henüz talep yok",
+  "requestDate": "Tarih",
+  "requestProgress": "İlerleme",
+  "requestType": "Tip",
+  "downloadError": "İndirme başarısız",
+
+  "createRequest": "Talep Oluştur",
+"selectPhoto": "Fotoğraf Seç",
+"changePhoto": "Fotoğrafı Değiştir",
+"photoRequired": "Fotoğraf zorunludur",
+"requestQueued": "Talep başarıyla kuyruğa alındı",
+"outputType": "Çıktı Tipi",
+"outputImage": "Görsel",
+"outputVideo": "Video",
+"orientationOptional": "Yön (İsteğe Bağlı)",
+"orientationAny": "Herhangi",
+"portrait": "Dikey",
+"landscape": "Yatay",
+"square": "Kare"
 }
