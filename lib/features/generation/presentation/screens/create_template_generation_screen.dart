@@ -34,7 +34,6 @@ class CreateTemplateGenerationScreen extends ConsumerStatefulWidget {
 class _CreateTemplateGenerationScreenState
     extends ConsumerState<CreateTemplateGenerationScreen> {
   File? _selectedImage;
-  String? _selectedOrientation; // null = opsiyonel, kullanıcı seçmedi
   bool _isSubmitting = false;
 
   // ─── Fotoğraf Seçimi ───────────────────────────────────────────────────────
@@ -67,7 +66,6 @@ class _CreateTemplateGenerationScreenState
             type: JobType.templateVideo,
             imagePath: _selectedImage!.path,
             templateId: template.uuid,
-            orientation: _selectedOrientation,
           );
 
       if (mounted) {
@@ -182,17 +180,6 @@ class _CreateTemplateGenerationScreenState
           _PhotoPicker(
             selectedImage: _selectedImage,
             onTap: _pickImage,
-            l10n: l10n,
-          ),
-
-          const SizedBox(height: 24),
-
-          // ── Yönlendirme (opsiyonel) ─────────────────────────────────────────
-          _SectionLabel(text: l10n.orientationOptional),
-          const SizedBox(height: 10),
-          _OrientationPicker(
-            selected: _selectedOrientation,
-            onChanged: (o) => setState(() => _selectedOrientation = o),
             l10n: l10n,
           ),
 
@@ -396,129 +383,6 @@ class _PhotoPicker extends StatelessWidget {
                   ),
                 ],
               ),
-      ),
-    );
-  }
-}
-
-// ─── Yönlendirme Seçici ───────────────────────────────────────────────────────
-
-class _OrientationPicker extends StatelessWidget {
-  final String? selected;
-  final ValueChanged<String?> onChanged;
-  final AppLocalizations l10n;
-
-  const _OrientationPicker({
-    required this.selected,
-    required this.onChanged,
-    required this.l10n,
-  });
-
-  static const _options = [
-    ('portrait', Icons.stay_current_portrait_outlined),
-    ('landscape', Icons.stay_current_landscape_outlined),
-    ('square', Icons.crop_square_outlined),
-  ];
-
-  String _label(String key, AppLocalizations l10n) {
-    switch (key) {
-      case 'portrait':
-        return l10n.portrait;
-      case 'landscape':
-        return l10n.landscape;
-      case 'square':
-        return l10n.square;
-      default:
-        return key;
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        // "Herhangi" — seçimi sıfırla
-        Expanded(
-          child: _OrientationChip(
-            label: l10n.orientationAny,
-            icon: Icons.apps_outlined,
-            isSelected: selected == null,
-            onTap: () => onChanged(null),
-          ),
-        ),
-        const SizedBox(width: 8),
-        ..._options.map((o) {
-          final (key, icon) = o;
-          return Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(left: 8),
-              child: _OrientationChip(
-                label: _label(key, l10n),
-                icon: icon,
-                isSelected: selected == key,
-                onTap: () => onChanged(selected == key ? null : key),
-              ),
-            ),
-          );
-        }),
-      ],
-    );
-  }
-}
-
-class _OrientationChip extends StatelessWidget {
-  final String label;
-  final IconData icon;
-  final bool isSelected;
-  final VoidCallback onTap;
-
-  const _OrientationChip({
-    required this.label,
-    required this.icon,
-    required this.isSelected,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-        decoration: BoxDecoration(
-          color: isSelected
-              ? AppColors.gold.withValues(alpha: 0.12)
-              : AppColors.surface,
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(
-            color: isSelected ? AppColors.gold : AppColors.border,
-            width: isSelected ? 1.5 : 1,
-          ),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              icon,
-              size: 18,
-              color: isSelected ? AppColors.gold : AppColors.textDisabled,
-            ),
-            const SizedBox(height: 4),
-            Text(
-              label,
-              style: TextStyle(
-                color: isSelected ? AppColors.gold : AppColors.textDisabled,
-                fontSize: 10,
-                fontWeight:
-                    isSelected ? FontWeight.w600 : FontWeight.w400,
-              ),
-              textAlign: TextAlign.center,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
-        ),
       ),
     );
   }
