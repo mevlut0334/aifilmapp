@@ -8,6 +8,9 @@ import '../../features/auth/presentation/providers/auth_provider.dart';
 import '../../features/auth/presentation/screens/forgot_password_screen.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/register_screen.dart';
+import '../../features/custom_video/presentation/screens/create_custom_video_screen.dart';
+import '../../features/custom_video/presentation/screens/custom_video_detail_screen.dart';
+import '../../features/custom_video/presentation/screens/custom_video_list_screen.dart';
 import '../../features/generation/presentation/screens/create_custom_image_screen.dart';
 import '../../features/generation/presentation/screens/create_template_generation_screen.dart';
 import '../../features/generation/presentation/screens/custom_image_list_screen.dart';
@@ -19,29 +22,32 @@ import '../widgets/app_shell.dart';
 // ─── Route Sabitleri ──────────────────────────────────────────────────────────
 
 abstract class AppRoutes {
-  static const splash          = '/';
-  static const login           = '/login';
-  static const register        = '/register';
-  static const forgotPassword  = '/forgot-password';
-  static const resetPassword   = '/reset-password';
+  static const splash         = '/';
+  static const login          = '/login';
+  static const register       = '/register';
+  static const forgotPassword = '/forgot-password';
+  static const resetPassword  = '/reset-password';
 
   // Shell rotaları (bottom nav)
-  static const home            = '/home';
-  static const myTemplates     = '/my-templates';
-  static const myImages        = '/my-images';
-  static const myVideos        = '/my-videos';
+  static const home        = '/home';
+  static const myTemplates = '/my-templates';
+  static const myImages    = '/my-images';
+  static const myVideos    = '/my-videos';
 
   // Giriş gerektiren rotalar
   static const createImage              = '/create-image';
-  static const createVideo              = '/create-video';
+  static const createVideo             = '/create-video';
   static const createTemplateGeneration = '/create-template-generation';
 
+  // Video detay
+  static const videoDetail = '/video-detail';
+
   // Genel rotalar
-  static const templateSwipe   = '/template-swipe';
-  static const packages        = '/packages';
-  static const about           = '/about';
-  static const privacy         = '/privacy';
-  static const terms           = '/terms';
+  static const templateSwipe = '/template-swipe';
+  static const packages      = '/packages';
+  static const about         = '/about';
+  static const privacy       = '/privacy';
+  static const terms         = '/terms';
 }
 
 // ─── Korumalı rotalar (giriş zorunlu) ────────────────────────────────────────
@@ -53,6 +59,7 @@ const _protectedRoutes = [
   AppRoutes.createImage,
   AppRoutes.createVideo,
   AppRoutes.createTemplateGeneration,
+  AppRoutes.videoDetail,
 ];
 
 // ─── Bottom nav index hesaplama ───────────────────────────────────────────────
@@ -77,8 +84,8 @@ class RouterNotifier extends ChangeNotifier {
     final authState = _ref.read(authProvider);
     final location  = state.matchedLocation;
 
-    final isAuthPage = location == AppRoutes.login      ||
-                       location == AppRoutes.register   ||
+    final isAuthPage = location == AppRoutes.login          ||
+                       location == AppRoutes.register       ||
                        location == AppRoutes.forgotPassword ||
                        location == AppRoutes.resetPassword;
 
@@ -145,15 +152,16 @@ final routerProvider = Provider<GoRouter>((ref) {
         },
       ),
 
-      // ✅ Custom görsel oluşturma (shell dışı — tam ekran, giriş zorunlu)
+      // Custom görsel oluşturma (shell dışı — tam ekran, giriş zorunlu)
       GoRoute(
         path: AppRoutes.createImage,
         builder: (context, state) => const CreateCustomImageScreen(),
       ),
+
+      // Custom video oluşturma (shell dışı — tam ekran, giriş zorunlu)
       GoRoute(
         path: AppRoutes.createVideo,
-        builder: (context, state) =>
-            const _PlaceholderScreen(title: 'Video Oluştur'),
+        builder: (context, state) => const CreateCustomVideoScreen(),
       ),
 
       // Şablon ile talep oluşturma (shell dışı — tam ekran, giriş zorunlu)
@@ -165,26 +173,13 @@ final routerProvider = Provider<GoRouter>((ref) {
         },
       ),
 
-      // Drawer rotaları (shell dışı)
+      // ✅ Video detay (shell dışı — tam ekran, giriş zorunlu)
       GoRoute(
-        path: AppRoutes.packages,
-        builder: (context, state) =>
-            const _PlaceholderScreen(title: 'Paketler'),
-      ),
-      GoRoute(
-        path: AppRoutes.about,
-        builder: (context, state) =>
-            const _PlaceholderScreen(title: 'Hakkımızda'),
-      ),
-      GoRoute(
-        path: AppRoutes.privacy,
-        builder: (context, state) =>
-            const _PlaceholderScreen(title: 'Gizlilik Politikası'),
-      ),
-      GoRoute(
-        path: AppRoutes.terms,
-        builder: (context, state) =>
-            const _PlaceholderScreen(title: 'Kullanım Şartları'),
+        path: '${AppRoutes.videoDetail}/:uuid',
+        builder: (context, state) {
+          final uuid = state.pathParameters['uuid']!;
+          return CustomVideoDetailScreen(uuid: uuid);
+        },
       ),
 
       // ── Shell (Bottom Nav) ────────────────────────────────────────────────
@@ -204,16 +199,16 @@ final routerProvider = Provider<GoRouter>((ref) {
             builder: (context, state) => const GenerationListScreen(),
           ),
 
-          // ✅ Görsellerim — CustomImageListScreen'e bağlandı
+          // Görsellerim — CustomImageListScreen
           GoRoute(
             path: AppRoutes.myImages,
             builder: (context, state) => const CustomImageListScreen(),
           ),
 
+          // Videolarım — CustomVideoListScreen
           GoRoute(
             path: AppRoutes.myVideos,
-            builder: (context, state) =>
-                const _PlaceholderScreen(title: 'Videolarım'),
+            builder: (context, state) => const CustomVideoListScreen(),
           ),
         ],
       ),
@@ -247,27 +242,6 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         child: CircularProgressIndicator(
           color: Color(0xFFD4AF37),
           strokeWidth: 2.5,
-        ),
-      ),
-    );
-  }
-}
-
-// ─── Placeholder Screen (geçici) ─────────────────────────────────────────────
-
-class _PlaceholderScreen extends StatelessWidget {
-  final String title;
-  const _PlaceholderScreen({required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFF0B0B0B),
-      appBar: AppBar(title: Text(title)),
-      body: Center(
-        child: Text(
-          title,
-          style: const TextStyle(color: Colors.white54),
         ),
       ),
     );

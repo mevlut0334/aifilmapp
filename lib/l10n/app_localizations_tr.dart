@@ -313,4 +313,105 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get referencePhotoOptional => 'Referans Fotoğraf (İsteğe Bağlı)';
+
+  @override
+  String get videoRequests => 'Videolarım';
+
+  @override
+  String get noVideoRequests => 'Henüz video talebi yok';
+
+  @override
+  String get createVideoRequest => 'Video Talebi Oluştur';
+
+  @override
+  String get promptLabel => 'Açıklama';
+
+  @override
+  String get promptHint =>
+      'Oluşturmak istediğiniz videoyu detaylı olarak açıklayın...';
+
+  @override
+  String get promptRequired => 'Açıklama zorunludur';
+
+  @override
+  String get formatLabel => 'Format';
+
+  @override
+  String get formatVertical => 'Dikey (9:16)';
+
+  @override
+  String get formatHorizontal => 'Yatay (16:9)';
+
+  @override
+  String get formatSquare => 'Kare (1:1)';
+
+  @override
+  String get inputImageOptional => 'Başlangıç Görseli (İsteğe Bağlı)';
+
+  @override
+  String get videoRequestDetail => 'Talep Detayı';
+
+  @override
+  String get segmentsTitle => 'Segmentler';
+
+  @override
+  String get segmentNumber => 'Segment';
+
+  @override
+  String get overallProgress => 'Genel İlerleme';
+
+  @override
+  String get tokenCost => 'Token Maliyeti';
+
+  @override
+  String get failureReason => 'Başarısızlık Nedeni';
+
+  @override
+  String get noSegmentsYet => 'Segmentler henüz oluşturulmadı';
+
+  @override
+  String get requestEditButton => 'Düzenleme İste';
+
+  @override
+  String get editPending => 'Düzenleme Bekliyor';
+
+  @override
+  String get editPromptLabel => 'Düzenleme Talimatı';
+
+  @override
+  String get editPromptHint => 'Ne değiştirilmesini istediğinizi açıklayın...';
+
+  @override
+  String get editPromptRequired => 'Düzenleme talimatı zorunludur';
+
+  @override
+  String get submitEdit => 'Gönder';
+
+  @override
+  String get editSubmitted => 'Düzenleme talebi gönderildi';
+
+  @override
+  String get downloadVideo => 'Videoyu İndir';
+
+  @override
+  String get videoRequestCreated => 'Video talebi başarıyla oluşturuldu';
+
+  @override
+  String get tokenCostInfo =>
+      'Maliyet admin tarafından video işlendikten sonra belirlenecek ve token\'ınızdan düşülecektir.';
+
+  @override
+  String get contact => 'İletişim';
+
+  @override
+  String get urlPrivacyPolicy => 'https://asilov.com/tr/privacy-policy';
+
+  @override
+  String get urlTermsOfService => 'https://asilov.com/tr/terms-of-service';
+
+  @override
+  String get urlAbout => 'https://asilov.com/tr/about';
+
+  @override
+  String get urlContact => 'https://asilov.com/tr/contact';
 }

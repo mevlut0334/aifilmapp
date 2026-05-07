@@ -313,4 +313,104 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get referencePhotoOptional => 'Reference Photo (Optional)';
+
+  @override
+  String get videoRequests => 'My Videos';
+
+  @override
+  String get noVideoRequests => 'No video requests yet';
+
+  @override
+  String get createVideoRequest => 'Create Video Request';
+
+  @override
+  String get promptLabel => 'Prompt';
+
+  @override
+  String get promptHint => 'Describe the video you want to create in detail...';
+
+  @override
+  String get promptRequired => 'Prompt is required';
+
+  @override
+  String get formatLabel => 'Format';
+
+  @override
+  String get formatVertical => 'Vertical (9:16)';
+
+  @override
+  String get formatHorizontal => 'Horizontal (16:9)';
+
+  @override
+  String get formatSquare => 'Square (1:1)';
+
+  @override
+  String get inputImageOptional => 'Input Image (Optional)';
+
+  @override
+  String get videoRequestDetail => 'Request Detail';
+
+  @override
+  String get segmentsTitle => 'Segments';
+
+  @override
+  String get segmentNumber => 'Segment';
+
+  @override
+  String get overallProgress => 'Overall Progress';
+
+  @override
+  String get tokenCost => 'Token Cost';
+
+  @override
+  String get failureReason => 'Failure Reason';
+
+  @override
+  String get noSegmentsYet => 'Segments not created yet';
+
+  @override
+  String get requestEditButton => 'Request Edit';
+
+  @override
+  String get editPending => 'Edit Pending';
+
+  @override
+  String get editPromptLabel => 'Edit Instructions';
+
+  @override
+  String get editPromptHint => 'Describe what you want changed...';
+
+  @override
+  String get editPromptRequired => 'Edit instructions are required';
+
+  @override
+  String get submitEdit => 'Submit';
+
+  @override
+  String get editSubmitted => 'Edit request submitted';
+
+  @override
+  String get downloadVideo => 'Download Video';
+
+  @override
+  String get videoRequestCreated => 'Video request created successfully';
+
+  @override
+  String get tokenCostInfo =>
+      'Cost will be determined by admin after video is processed and deducted from your tokens.';
+
+  @override
+  String get contact => 'Contact';
+
+  @override
+  String get urlPrivacyPolicy => 'https://asilov.com/en/privacy-policy';
+
+  @override
+  String get urlTermsOfService => 'https://asilov.com/en/terms-of-service';
+
+  @override
+  String get urlAbout => 'https://asilov.com/en/about';
+
+  @override
+  String get urlContact => 'https://asilov.com/en/contact';
 }

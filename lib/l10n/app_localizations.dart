@@ -703,6 +703,204 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Referans Fotoğraf (İsteğe Bağlı)'**
   String get referencePhotoOptional;
+
+  /// No description provided for @videoRequests.
+  ///
+  /// In tr, this message translates to:
+  /// **'Videolarım'**
+  String get videoRequests;
+
+  /// No description provided for @noVideoRequests.
+  ///
+  /// In tr, this message translates to:
+  /// **'Henüz video talebi yok'**
+  String get noVideoRequests;
+
+  /// No description provided for @createVideoRequest.
+  ///
+  /// In tr, this message translates to:
+  /// **'Video Talebi Oluştur'**
+  String get createVideoRequest;
+
+  /// No description provided for @promptLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Açıklama'**
+  String get promptLabel;
+
+  /// No description provided for @promptHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Oluşturmak istediğiniz videoyu detaylı olarak açıklayın...'**
+  String get promptHint;
+
+  /// No description provided for @promptRequired.
+  ///
+  /// In tr, this message translates to:
+  /// **'Açıklama zorunludur'**
+  String get promptRequired;
+
+  /// No description provided for @formatLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Format'**
+  String get formatLabel;
+
+  /// No description provided for @formatVertical.
+  ///
+  /// In tr, this message translates to:
+  /// **'Dikey (9:16)'**
+  String get formatVertical;
+
+  /// No description provided for @formatHorizontal.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yatay (16:9)'**
+  String get formatHorizontal;
+
+  /// No description provided for @formatSquare.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kare (1:1)'**
+  String get formatSquare;
+
+  /// No description provided for @inputImageOptional.
+  ///
+  /// In tr, this message translates to:
+  /// **'Başlangıç Görseli (İsteğe Bağlı)'**
+  String get inputImageOptional;
+
+  /// No description provided for @videoRequestDetail.
+  ///
+  /// In tr, this message translates to:
+  /// **'Talep Detayı'**
+  String get videoRequestDetail;
+
+  /// No description provided for @segmentsTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Segmentler'**
+  String get segmentsTitle;
+
+  /// No description provided for @segmentNumber.
+  ///
+  /// In tr, this message translates to:
+  /// **'Segment'**
+  String get segmentNumber;
+
+  /// No description provided for @overallProgress.
+  ///
+  /// In tr, this message translates to:
+  /// **'Genel İlerleme'**
+  String get overallProgress;
+
+  /// No description provided for @tokenCost.
+  ///
+  /// In tr, this message translates to:
+  /// **'Token Maliyeti'**
+  String get tokenCost;
+
+  /// No description provided for @failureReason.
+  ///
+  /// In tr, this message translates to:
+  /// **'Başarısızlık Nedeni'**
+  String get failureReason;
+
+  /// No description provided for @noSegmentsYet.
+  ///
+  /// In tr, this message translates to:
+  /// **'Segmentler henüz oluşturulmadı'**
+  String get noSegmentsYet;
+
+  /// No description provided for @requestEditButton.
+  ///
+  /// In tr, this message translates to:
+  /// **'Düzenleme İste'**
+  String get requestEditButton;
+
+  /// No description provided for @editPending.
+  ///
+  /// In tr, this message translates to:
+  /// **'Düzenleme Bekliyor'**
+  String get editPending;
+
+  /// No description provided for @editPromptLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Düzenleme Talimatı'**
+  String get editPromptLabel;
+
+  /// No description provided for @editPromptHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ne değiştirilmesini istediğinizi açıklayın...'**
+  String get editPromptHint;
+
+  /// No description provided for @editPromptRequired.
+  ///
+  /// In tr, this message translates to:
+  /// **'Düzenleme talimatı zorunludur'**
+  String get editPromptRequired;
+
+  /// No description provided for @submitEdit.
+  ///
+  /// In tr, this message translates to:
+  /// **'Gönder'**
+  String get submitEdit;
+
+  /// No description provided for @editSubmitted.
+  ///
+  /// In tr, this message translates to:
+  /// **'Düzenleme talebi gönderildi'**
+  String get editSubmitted;
+
+  /// No description provided for @downloadVideo.
+  ///
+  /// In tr, this message translates to:
+  /// **'Videoyu İndir'**
+  String get downloadVideo;
+
+  /// No description provided for @videoRequestCreated.
+  ///
+  /// In tr, this message translates to:
+  /// **'Video talebi başarıyla oluşturuldu'**
+  String get videoRequestCreated;
+
+  /// No description provided for @tokenCostInfo.
+  ///
+  /// In tr, this message translates to:
+  /// **'Maliyet admin tarafından video işlendikten sonra belirlenecek ve token\'ınızdan düşülecektir.'**
+  String get tokenCostInfo;
+
+  /// No description provided for @contact.
+  ///
+  /// In tr, this message translates to:
+  /// **'İletişim'**
+  String get contact;
+
+  /// No description provided for @urlPrivacyPolicy.
+  ///
+  /// In tr, this message translates to:
+  /// **'https://asilov.com/tr/privacy-policy'**
+  String get urlPrivacyPolicy;
+
+  /// No description provided for @urlTermsOfService.
+  ///
+  /// In tr, this message translates to:
+  /// **'https://asilov.com/tr/terms-of-service'**
+  String get urlTermsOfService;
+
+  /// No description provided for @urlAbout.
+  ///
+  /// In tr, this message translates to:
+  /// **'https://asilov.com/tr/about'**
+  String get urlAbout;
+
+  /// No description provided for @urlContact.
+  ///
+  /// In tr, this message translates to:
+  /// **'https://asilov.com/tr/contact'**
+  String get urlContact;
 }
 
 class _AppLocalizationsDelegate

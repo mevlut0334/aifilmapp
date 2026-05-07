@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:asilov/l10n/app_localizations.dart';
 import 'package:asilov/core/constants/app_colors.dart';
 import 'package:asilov/core/providers/token_provider.dart';
@@ -91,7 +92,6 @@ class _AppShellState extends ConsumerState<AppShell> {
     final l10n = AppLocalizations.of(context)!;
     final authState = ref.watch(authProvider);
     final tokenBalance = ref.watch(tokenBalanceProvider);
-    
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -249,9 +249,17 @@ class _AppDrawer extends ConsumerWidget {
 
   const _AppDrawer({required this.l10n, required this.authState});
 
+  Future<void> _launchUrl(String url) async {
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final user = authState.user;
+    final locale = l10n.localeName; // 'en' veya 'tr'
 
     return Drawer(
       backgroundColor: AppColors.surface,
@@ -326,7 +334,7 @@ class _AppDrawer extends ConsumerWidget {
               label: l10n.aboutUs,
               onTap: () {
                 Navigator.pop(context);
-                context.go('/about');
+                _launchUrl('https://asilov.com/$locale/about');
               },
             ),
             _DrawerItem(
@@ -334,7 +342,7 @@ class _AppDrawer extends ConsumerWidget {
               label: l10n.consentPrivacy,
               onTap: () {
                 Navigator.pop(context);
-                context.go('/privacy');
+                _launchUrl('https://asilov.com/$locale/privacy-policy');
               },
             ),
             _DrawerItem(
@@ -342,7 +350,15 @@ class _AppDrawer extends ConsumerWidget {
               label: l10n.consentTerms,
               onTap: () {
                 Navigator.pop(context);
-                context.go('/terms');
+                _launchUrl('https://asilov.com/$locale/terms-of-service');
+              },
+            ),
+            _DrawerItem(
+              icon: Icons.mail_outline,
+              label: l10n.contact,
+              onTap: () {
+                Navigator.pop(context);
+                _launchUrl('https://asilov.com/$locale/contact');
               },
             ),
             const Spacer(),
