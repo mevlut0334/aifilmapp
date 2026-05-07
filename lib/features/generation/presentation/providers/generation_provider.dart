@@ -57,3 +57,29 @@ class GenerationListNotifier
     state = await AsyncValue.guard(_fetchRequests);
   }
 }
+
+// ─── Custom Image List ────────────────────────────────────────────────────────
+
+final customImageListProvider =
+    AsyncNotifierProvider<CustomImageListNotifier, List<GenerationRequestEntity>>(
+  CustomImageListNotifier.new,
+);
+
+class CustomImageListNotifier
+    extends AsyncNotifier<List<GenerationRequestEntity>> {
+  @override
+  Future<List<GenerationRequestEntity>> build() async {
+    return _fetchRequests();
+  }
+
+  Future<List<GenerationRequestEntity>> _fetchRequests() async {
+    final datasource = ref.read(generationRemoteDatasourceProvider);
+    final models = await datasource.getCustomImageRequests();
+    return models.map((m) => m.toEntity()).toList();
+  }
+
+  Future<void> refresh() async {
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(_fetchRequests);
+  }
+}

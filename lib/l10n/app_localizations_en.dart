@@ -297,4 +297,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get square => 'Square';
+
+  @override
+  String get descriptionLabel => 'Description';
+
+  @override
+  String get descriptionHint =>
+      'Describe the image you want to create in detail...';
+
+  @override
+  String get descriptionRequired => 'Description is required';
+
+  @override
+  String get orientationLabel => 'Orientation';
+
+  @override
+  String get referencePhotoOptional => 'Reference Photo (Optional)';
 }

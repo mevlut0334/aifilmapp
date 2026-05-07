@@ -673,6 +673,36 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Kare'**
   String get square;
+
+  /// No description provided for @descriptionLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Açıklama'**
+  String get descriptionLabel;
+
+  /// No description provided for @descriptionHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Oluşturmak istediğiniz görseli detaylı olarak açıklayın...'**
+  String get descriptionHint;
+
+  /// No description provided for @descriptionRequired.
+  ///
+  /// In tr, this message translates to:
+  /// **'Açıklama zorunludur'**
+  String get descriptionRequired;
+
+  /// No description provided for @orientationLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yön'**
+  String get orientationLabel;
+
+  /// No description provided for @referencePhotoOptional.
+  ///
+  /// In tr, this message translates to:
+  /// **'Referans Fotoğraf (İsteğe Bağlı)'**
+  String get referencePhotoOptional;
 }
 
 class _AppLocalizationsDelegate

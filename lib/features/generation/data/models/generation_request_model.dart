@@ -5,8 +5,9 @@ import '../../domain/entities/generation_request_entity.dart';
 class GenerationRequestModel {
   final String uuid;
   final String type;
-  final String templateId;
+  final String? templateId;
   final String? orientation;
+  final String? description;
   final String status;
   final int progress;
   final int tokenCost;
@@ -18,8 +19,9 @@ class GenerationRequestModel {
   const GenerationRequestModel({
     required this.uuid,
     required this.type,
-    required this.templateId,
+    this.templateId,
     this.orientation,
+    this.description,
     required this.status,
     required this.progress,
     required this.tokenCost,
@@ -30,11 +32,9 @@ class GenerationRequestModel {
   });
 
   factory GenerationRequestModel.fromJson(Map<String, dynamic> json) {
-    // API: "template": { "uuid": "...", "title": "...", "token_cost": 50 }
     final templateMap = json['template'] as Map<String, dynamic>?;
-    final templateId = templateMap?['uuid'] as String? ?? '';
+    final templateId = templateMap?['uuid'] as String?;
 
-    // API: tek "output_url" alanı var; type'a göre doğru alana atanır
     final outputUrl = json['output_url'] as String?;
     final type = json['type'] as String;
     final isVideo = type == 'template_video';
@@ -44,6 +44,7 @@ class GenerationRequestModel {
       type: type,
       templateId: templateId,
       orientation: json['orientation'] as String?,
+      description: json['description'] as String?,
       status: json['status'] as String,
       progress: json['progress'] as int? ?? 0,
       tokenCost: json['token_cost'] as int,
@@ -60,6 +61,7 @@ class GenerationRequestModel {
       type: _parseType(type),
       templateId: templateId,
       orientation: orientation,
+      description: description,
       status: _parseStatus(status),
       progress: progress,
       tokenCost: tokenCost,
@@ -73,16 +75,17 @@ class GenerationRequestModel {
   static GenerationType _parseType(String type) {
     return switch (type) {
       'template_video' => GenerationType.templateVideo,
-      _ => GenerationType.templateImage,
+      'custom_image'   => GenerationType.customImage,
+      _                => GenerationType.templateImage,
     };
   }
 
   static GenerationStatus _parseStatus(String status) {
     return switch (status) {
       'processing' => GenerationStatus.processing,
-      'completed' => GenerationStatus.completed,
-      'failed' => GenerationStatus.failed,
-      _ => GenerationStatus.pending,
+      'completed'  => GenerationStatus.completed,
+      'failed'     => GenerationStatus.failed,
+      _            => GenerationStatus.pending,
     };
   }
 }

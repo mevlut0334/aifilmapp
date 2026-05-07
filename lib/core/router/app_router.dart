@@ -1,3 +1,5 @@
+// lib/core/router/app_router.dart
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -6,7 +8,9 @@ import '../../features/auth/presentation/providers/auth_provider.dart';
 import '../../features/auth/presentation/screens/forgot_password_screen.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/register_screen.dart';
+import '../../features/generation/presentation/screens/create_custom_image_screen.dart';
 import '../../features/generation/presentation/screens/create_template_generation_screen.dart';
+import '../../features/generation/presentation/screens/custom_image_list_screen.dart';
 import '../../features/generation/presentation/screens/generation_list_screen.dart';
 import '../../features/home/presentation/screens/home_screen.dart';
 import '../../features/templates/presentation/screens/template_swipe_screen.dart';
@@ -96,7 +100,7 @@ class RouterNotifier extends ChangeNotifier {
         if (isAuthPage) return null;
         if (isProtected) return AppRoutes.login;
         if (location == AppRoutes.splash) return AppRoutes.home;
-        return null; // Ana sayfa ve swipe herkese açık
+        return null;
     }
   }
 }
@@ -141,11 +145,10 @@ final routerProvider = Provider<GoRouter>((ref) {
         },
       ),
 
-      // Create rotaları (shell dışı — tam ekran, giriş zorunlu)
+      // ✅ Custom görsel oluşturma (shell dışı — tam ekran, giriş zorunlu)
       GoRoute(
         path: AppRoutes.createImage,
-        builder: (context, state) =>
-            const _PlaceholderScreen(title: 'Görsel Oluştur'),
+        builder: (context, state) => const CreateCustomImageScreen(),
       ),
       GoRoute(
         path: AppRoutes.createVideo,
@@ -196,17 +199,17 @@ final routerProvider = Provider<GoRouter>((ref) {
             builder: (context, state) => const HomeScreen(),
           ),
 
-          // ✅ Talep listesi — GenerationListScreen'e bağlandı
           GoRoute(
             path: AppRoutes.myTemplates,
             builder: (context, state) => const GenerationListScreen(),
           ),
 
+          // ✅ Görsellerim — CustomImageListScreen'e bağlandı
           GoRoute(
             path: AppRoutes.myImages,
-            builder: (context, state) =>
-                const _PlaceholderScreen(title: 'Görsellerim'),
+            builder: (context, state) => const CustomImageListScreen(),
           ),
+
           GoRoute(
             path: AppRoutes.myVideos,
             builder: (context, state) =>

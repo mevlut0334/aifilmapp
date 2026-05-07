@@ -1,3 +1,5 @@
+// lib/features/generation/presentation/screens/custom_image_list_screen.dart
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -7,27 +9,28 @@ import 'package:asilov/features/generation/domain/entities/generation_request_en
 import 'package:asilov/features/generation/presentation/providers/generation_provider.dart';
 import 'package:asilov/l10n/app_localizations.dart';
 
-class GenerationListScreen extends ConsumerStatefulWidget {
-  const GenerationListScreen({super.key});
+class CustomImageListScreen extends ConsumerStatefulWidget {
+  const CustomImageListScreen({super.key});
 
   @override
-  ConsumerState<GenerationListScreen> createState() =>
-      _GenerationListScreenState();
+  ConsumerState<CustomImageListScreen> createState() =>
+      _CustomImageListScreenState();
 }
 
-class _GenerationListScreenState extends ConsumerState<GenerationListScreen> {
+class _CustomImageListScreenState
+    extends ConsumerState<CustomImageListScreen> {
   @override
   void initState() {
     super.initState();
     Future.microtask(
-      () => ref.read(generationListProvider.notifier).refresh(),
+      () => ref.read(customImageListProvider.notifier).refresh(),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final requestsAsync = ref.watch(generationListProvider);
+    final requestsAsync = ref.watch(customImageListProvider);
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -35,7 +38,7 @@ class _GenerationListScreenState extends ConsumerState<GenerationListScreen> {
         backgroundColor: AppColors.background,
         elevation: 0,
         title: Text(
-          l10n.myRequests,
+          l10n.navImages,
           style: const TextStyle(
             color: AppColors.textPrimary,
             fontSize: 18,
@@ -46,7 +49,7 @@ class _GenerationListScreenState extends ConsumerState<GenerationListScreen> {
           IconButton(
             icon: const Icon(Icons.refresh, color: AppColors.gold),
             onPressed: () =>
-                ref.read(generationListProvider.notifier).refresh(),
+                ref.read(customImageListProvider.notifier).refresh(),
           ),
         ],
       ),
@@ -59,22 +62,25 @@ class _GenerationListScreenState extends ConsumerState<GenerationListScreen> {
         ),
         error: (error, _) => _ErrorView(
           message: error.toString().replaceFirst('Exception: ', ''),
-          onRetry: () => ref.read(generationListProvider.notifier).refresh(),
+          onRetry: () =>
+              ref.read(customImageListProvider.notifier).refresh(),
         ),
         data: (requests) {
           if (requests.isEmpty) {
-            return _EmptyView(message: l10n.noRequests);
+            return _EmptyView(message: l10n.noImages);
           }
+
           return RefreshIndicator(
             color: AppColors.gold,
             backgroundColor: AppColors.surface,
             onRefresh: () =>
-                ref.read(generationListProvider.notifier).refresh(),
+                ref.read(customImageListProvider.notifier).refresh(),
             child: ListView.separated(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
               itemCount: requests.length,
               separatorBuilder: (_, __) => const SizedBox(height: 12),
-              itemBuilder: (context, i) => _RequestCard(request: requests[i]),
+              itemBuilder: (context, i) =>
+                  _ImageRequestCard(request: requests[i]),
             ),
           );
         },
@@ -83,12 +89,22 @@ class _GenerationListScreenState extends ConsumerState<GenerationListScreen> {
   }
 }
 
-// ─── Request Card ─────────────────────────────────────────────────────────────
+// ─── Image Request Card ───────────────────────────────────────────────────────
 
-class _RequestCard extends StatelessWidget {
+class _ImageRequestCard extends StatelessWidget {
   final GenerationRequestEntity request;
 
-  const _RequestCard({required this.request});
+  const _ImageRequestCard({required this.request});
+
+  String? get _downloadUrl => request.outputImageUrl;
+
+  String _formatDate(DateTime dt) {
+    return '${dt.day.toString().padLeft(2, '0')}.'
+        '${dt.month.toString().padLeft(2, '0')}.'
+        '${dt.year} '
+        '${dt.hour.toString().padLeft(2, '0')}:'
+        '${dt.minute.toString().padLeft(2, '0')}';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -105,7 +121,7 @@ class _RequestCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // ── Yuvarlak progress ──
+          // ── Progress ──
           _CircularProgress(progress: request.progress),
           const SizedBox(width: 16),
 
@@ -114,42 +130,44 @@ class _RequestCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Tip badge
-                _TypeBadge(type: request.type),
-                const SizedBox(height: 6),
-                // Tarih
+                if (request.orientation != null)
+                  _OrientationBadge(orientation: request.orientation!),
+                if (request.orientation != null) const SizedBox(height: 6),
+                if (request.description != null &&
+                    request.description!.isNotEmpty)
+                  Text(
+                    request.description!,
+                    style: const TextStyle(
+                      color: AppColors.textSecondary,
+                      fontSize: 12,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                if (request.description != null &&
+                    request.description!.isNotEmpty)
+                  const SizedBox(height: 6),
                 Text(
                   _formatDate(request.createdAt),
                   style: const TextStyle(
-                    color: AppColors.textSecondary,
-                    fontSize: 12,
+                    color: AppColors.textDisabled,
+                    fontSize: 11,
                   ),
                 ),
                 const SizedBox(height: 6),
-                // Durum
                 _StatusBadge(status: request.status),
               ],
             ),
           ),
           const SizedBox(width: 12),
 
-          // ── İndir butonu ──
+          // ── İndir Butonu ──
           if (request.status == GenerationStatus.completed &&
               _downloadUrl != null)
             _DownloadButton(url: _downloadUrl!, l10n: l10n),
         ],
       ),
     );
-  }
-
-  String? get _downloadUrl => request.outputVideoUrl ?? request.outputImageUrl;
-
-  String _formatDate(DateTime dt) {
-    return '${dt.day.toString().padLeft(2, '0')}.'
-        '${dt.month.toString().padLeft(2, '0')}.'
-        '${dt.year} '
-        '${dt.hour.toString().padLeft(2, '0')}:'
-        '${dt.minute.toString().padLeft(2, '0')}';
   }
 }
 
@@ -172,7 +190,8 @@ class _CircularProgress extends StatelessWidget {
             value: progress / 100,
             strokeWidth: 5,
             backgroundColor: AppColors.gold.withValues(alpha: 0.15),
-            valueColor: const AlwaysStoppedAnimation<Color>(AppColors.gold),
+            valueColor:
+                const AlwaysStoppedAnimation<Color>(AppColors.gold),
           ),
           Center(
             child: Text(
@@ -190,38 +209,43 @@ class _CircularProgress extends StatelessWidget {
   }
 }
 
-// ─── Type Badge ───────────────────────────────────────────────────────────────
+// ─── Orientation Badge ────────────────────────────────────────────────────────
 
-class _TypeBadge extends StatelessWidget {
-  final GenerationType type;
+class _OrientationBadge extends StatelessWidget {
+  final String orientation;
 
-  const _TypeBadge({required this.type});
+  const _OrientationBadge({required this.orientation});
 
   @override
   Widget build(BuildContext context) {
-    final label = switch (type) {
-      GenerationType.templateImage => 'Template Image',
-      GenerationType.templateVideo => 'Template Video',
-      GenerationType.customImage => 'Custom Image',
+    final l10n = AppLocalizations.of(context)!;
+
+    final label = switch (orientation) {
+      'landscape' => l10n.landscape,
+      'square'    => l10n.square,
+      _           => l10n.portrait,
     };
 
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-      decoration: BoxDecoration(
-        color: AppColors.gold.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(6),
-        border: Border.all(
-          color: AppColors.gold.withValues(alpha: 0.3),
+    final icon = switch (orientation) {
+      'landscape' => Icons.crop_landscape_outlined,
+      'square'    => Icons.crop_square_outlined,
+      _           => Icons.crop_portrait_outlined,
+    };
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, color: AppColors.gold, size: 13),
+        const SizedBox(width: 4),
+        Text(
+          label,
+          style: const TextStyle(
+            color: AppColors.gold,
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+          ),
         ),
-      ),
-      child: Text(
-        label,
-        style: const TextStyle(
-          color: AppColors.gold,
-          fontSize: 11,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
+      ],
     );
   }
 }
@@ -238,19 +262,10 @@ class _StatusBadge extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
 
     final (label, color) = switch (status) {
-      GenerationStatus.pending => (
-          l10n.requestPending,
-          const Color(0xFFF5A623)
-        ),
-      GenerationStatus.processing => (
-          l10n.requestProcessing,
-          const Color(0xFF4A9EFF)
-        ),
-      GenerationStatus.completed => (
-          l10n.requestCompleted,
-          const Color(0xFF4CAF50)
-        ),
-      GenerationStatus.failed => (l10n.requestFailed, const Color(0xFFE53935)),
+      GenerationStatus.pending    => (l10n.requestPending,    const Color(0xFFF5A623)),
+      GenerationStatus.processing => (l10n.requestProcessing, const Color(0xFF4A9EFF)),
+      GenerationStatus.completed  => (l10n.requestCompleted,  const Color(0xFF4CAF50)),
+      GenerationStatus.failed     => (l10n.requestFailed,     const Color(0xFFE53935)),
     };
 
     return Row(
@@ -308,7 +323,8 @@ class _DownloadButton extends StatelessWidget {
     return GestureDetector(
       onTap: () => _download(context),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+        padding:
+            const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
         decoration: BoxDecoration(
           gradient: const LinearGradient(
             colors: [AppColors.gold, Color(0xFFF5D97A)],
@@ -349,7 +365,7 @@ class _EmptyView extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.inbox_outlined,
+          const Icon(Icons.image_outlined,
               color: AppColors.textDisabled, size: 48),
           const SizedBox(height: 12),
           Text(

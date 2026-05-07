@@ -2,13 +2,14 @@
 
 enum GenerationStatus { pending, processing, completed, failed }
 
-enum GenerationType { templateImage, templateVideo }
+enum GenerationType { templateImage, templateVideo, customImage }
 
 class GenerationRequestEntity {
   final String uuid;
   final GenerationType type;
-  final String templateId;
+  final String? templateId;
   final String? orientation;
+  final String? description;
   final GenerationStatus status;
   final int progress;
   final int tokenCost;
@@ -20,8 +21,9 @@ class GenerationRequestEntity {
   const GenerationRequestEntity({
     required this.uuid,
     required this.type,
-    required this.templateId,
+    this.templateId,
     this.orientation,
+    this.description,
     required this.status,
     required this.progress,
     required this.tokenCost,

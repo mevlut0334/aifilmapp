@@ -121,5 +121,11 @@
 "orientationAny": "Herhangi",
 "portrait": "Dikey",
 "landscape": "Yatay",
-"square": "Kare"
+"square": "Kare",
+
+"descriptionLabel": "Açıklama",
+"descriptionHint": "Oluşturmak istediğiniz görseli detaylı olarak açıklayın...",
+"descriptionRequired": "Açıklama zorunludur",
+"orientationLabel": "Yön",
+"referencePhotoOptional": "Referans Fotoğraf (İsteğe Bağlı)"
 }

@@ -297,4 +297,20 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get square => 'Kare';
+
+  @override
+  String get descriptionLabel => 'Açıklama';
+
+  @override
+  String get descriptionHint =>
+      'Oluşturmak istediğiniz görseli detaylı olarak açıklayın...';
+
+  @override
+  String get descriptionRequired => 'Açıklama zorunludur';
+
+  @override
+  String get orientationLabel => 'Yön';
+
+  @override
+  String get referencePhotoOptional => 'Referans Fotoğraf (İsteğe Bağlı)';
 }

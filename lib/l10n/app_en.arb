@@ -121,5 +121,11 @@
 "orientationAny": "Any",
 "portrait": "Portrait",
 "landscape": "Landscape",
-"square": "Square"
+"square": "Square",
+
+"descriptionLabel": "Description",
+"descriptionHint": "Describe the image you want to create in detail...",
+"descriptionRequired": "Description is required",
+"orientationLabel": "Orientation",
+"referencePhotoOptional": "Reference Photo (Optional)"
 }

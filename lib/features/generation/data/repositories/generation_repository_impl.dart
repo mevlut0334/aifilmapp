@@ -29,7 +29,7 @@ class GenerationRepositoryImpl implements GenerationRepository {
     }
   }
 
-  // ─── Talep Oluştur ────────────────────────────────────────────────────────
+  // ─── Template Talep Oluştur ───────────────────────────────────────────────
 
   @override
   Future<Result<GenerationRequestEntity>> createTemplateGeneration({
@@ -44,6 +44,32 @@ class GenerationRepositoryImpl implements GenerationRepository {
         templateId: templateId,
         imagePath: imagePath,
         orientation: orientation,
+      );
+      return Success(model.toEntity());
+    } on UnauthorizedException catch (e) {
+      return Failure(e.message, statusCode: 401);
+    } on ServerException catch (e) {
+      return Failure(e.message, statusCode: e.statusCode);
+    } on NetworkException catch (e) {
+      return Failure(e.message);
+    } catch (e) {
+      return Failure(e.toString());
+    }
+  }
+
+  // ─── Custom Görsel Talep Oluştur ──────────────────────────────────────────
+
+  @override
+  Future<Result<GenerationRequestEntity>> createCustomImageGeneration({
+    required String orientation,
+    required String description,
+    String? imagePath,
+  }) async {
+    try {
+      final model = await _datasource.createCustomImageGeneration(
+        orientation: orientation,
+        description: description,
+        imagePath: imagePath,
       );
       return Success(model.toEntity());
     } on UnauthorizedException catch (e) {
@@ -80,5 +106,6 @@ class GenerationRepositoryImpl implements GenerationRepository {
   String _generationTypeToString(GenerationType type) => switch (type) {
         GenerationType.templateImage => 'template_image',
         GenerationType.templateVideo => 'template_video',
+        GenerationType.customImage   => 'custom_image',
       };
 }

@@ -15,6 +15,13 @@ abstract interface class GenerationRepository {
     String? orientation,
   });
 
+  /// Custom görsel talebi oluşturur.
+  Future<Result<GenerationRequestEntity>> createCustomImageGeneration({
+    required String orientation,
+    required String description,
+    String? imagePath,
+  });
+
   /// Kullanıcının tüm generation taleplerini listeler.
   Future<Result<List<GenerationRequestEntity>>> getGenerationRequests();
 }

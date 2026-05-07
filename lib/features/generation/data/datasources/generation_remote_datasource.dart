@@ -20,7 +20,7 @@ class GenerationRemoteDatasource {
     return data['balance'] as int;
   }
 
-  // ─── Talep Oluştur ────────────────────────────────────────────────────────
+  // ─── Template Talep Oluştur ───────────────────────────────────────────────
 
   Future<GenerationRequestModel> createTemplateGeneration({
     required String type,
@@ -50,10 +50,54 @@ class GenerationRemoteDatasource {
     return GenerationRequestModel.fromJson(requestJson);
   }
 
+  // ─── Custom Görsel Talep Oluştur ──────────────────────────────────────────
+
+  Future<GenerationRequestModel> createCustomImageGeneration({
+    required String orientation,
+    required String description,
+    String? imagePath,
+  }) async {
+    final map = <String, dynamic>{
+      'type': 'custom_image',
+      'orientation': orientation,
+      'description': description,
+    };
+
+    if (imagePath != null) {
+      final imageFile = File(imagePath);
+      map['input_image'] = await MultipartFile.fromFile(
+        imagePath,
+        filename: imageFile.uri.pathSegments.last,
+      );
+    }
+
+    final formData = FormData.fromMap(map);
+
+    final response = await _dio.post(
+      ApiConstants.generationRequests,
+      data: formData,
+    );
+
+    final requestJson =
+        response.data['data']['request'] as Map<String, dynamic>;
+    return GenerationRequestModel.fromJson(requestJson);
+  }
+
   // ─── Talep Listesi ────────────────────────────────────────────────────────
 
   Future<List<GenerationRequestModel>> getGenerationRequests() async {
     final response = await _dio.get(ApiConstants.generationRequests);
+    final list = response.data['data']['requests'] as List<dynamic>;
+    return list
+        .map((e) =>
+            GenerationRequestModel.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  // ─── Custom Görsel Talep Listesi ─────────────────────────────────────────
+
+  Future<List<GenerationRequestModel>> getCustomImageRequests() async {
+    final response = await _dio.get('/custom-image-requests');
     final list = response.data['data']['requests'] as List<dynamic>;
     return list
         .map((e) =>
