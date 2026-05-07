@@ -63,7 +63,16 @@ class _TemplateSwipeScreenState extends ConsumerState<TemplateSwipeScreen> {
     // döngüsünde yeniden çağrılma riski ortadan kalkar.
     _templateSubscription = ref.listenManual<AsyncValue<List<TemplateEntity>>>(
       templateListProvider,
-      (_, next) => next.whenData(_initWithTemplates),
+      (_, next) {
+        next.whenData((templates) {
+          if (!_didInit) {
+            _initWithTemplates(templates); // ilk kez: tam init
+          } else {
+            _templates =
+                templates; // sonraki güncellemeler: sadece listeyi yenile
+          }
+        });
+      },
       fireImmediately: true,
     );
   }
@@ -720,8 +729,8 @@ class _ErrorView extends StatelessWidget {
             const SizedBox(height: 16),
             Text(
               message,
-              style: const TextStyle(
-                  color: AppColors.textSecondary, fontSize: 14),
+              style:
+                  const TextStyle(color: AppColors.textSecondary, fontSize: 14),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 20),
