@@ -1,5 +1,7 @@
 // lib/features/templates/presentation/screens/template_swipe_screen.dart
 
+import 'dart:math' as math;
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -32,30 +34,44 @@ class _TemplateSwipeScreenState extends ConsumerState<TemplateSwipeScreen> {
   bool _isMuted = true;
   bool _hintVisible = true;
 
-  /// templates ilk yüklendiğinde tek seferlik başlatma yapılır
+  // FIX 1: _didInit guard'ı build() yerine listenManual ile yönetilir
   bool _didInit = false;
 
-  // ─── Video Yönetimi ───────────────────────────────────────────────────────
-  /// index → controller haritası
-  final Map<int, VideoPlayerController> _controllers = {};
+  // FIX 1: Riverpod subscription'ını dispose'da kapatmak için saklıyoruz
+  ProviderSubscription<AsyncValue<List<TemplateEntity>>>? _templateSubscription;
 
-  /// initialize + play başarıyla tamamlanan slide indisleri
+  // ─── Video Yönetimi ───────────────────────────────────────────────────────
+  final Map<int, VideoPlayerController> _controllers = {};
   final Set<int> _readyIndices = {};
 
   List<TemplateEntity> _templates = [];
 
-  /// Mevcut sayfanın önünde yüklenecek slide sayısı
   static const int _preloadAhead = 2;
 
-  /// Mevcut sayfanın arkasında yüklenecek slide sayısı
-  static const int _preloadBehind = 1;
+  // FIX 4: PageView çift hareket sorununu hafifletmek için arkayı da preload'la
+  static const int _preloadBehind = 2;
 
-  /// Bu uzaklıktaki slide'ların controller'ı dispose edilir
   static const int _disposeThreshold = 4;
 
   // ─── Yaşam Döngüsü ───────────────────────────────────────────────────────
   @override
+  void initState() {
+    super.initState();
+
+    // FIX 1: _initWithTemplates artık build() içinden değil,
+    // Riverpod listener'ından tetikleniyor. Bu sayede her setState/rebuild
+    // döngüsünde yeniden çağrılma riski ortadan kalkar.
+    _templateSubscription = ref.listenManual<AsyncValue<List<TemplateEntity>>>(
+      templateListProvider,
+      (_, next) => next.whenData(_initWithTemplates),
+      fireImmediately: true,
+    );
+  }
+
+  @override
   void dispose() {
+    // FIX 1: Subscription'ı kapat
+    _templateSubscription?.close();
     _pageController?.dispose();
     for (final c in _controllers.values) {
       c.dispose();
@@ -64,9 +80,6 @@ class _TemplateSwipeScreenState extends ConsumerState<TemplateSwipeScreen> {
   }
 
   // ─── Template Başlatma ────────────────────────────────────────────────────
-
-  /// Template listesi ilk kez yüklendiğinde PageController'ı doğru
-  /// konumla oluşturur, video penceresini açar ve hint timer'ını başlatır.
   void _initWithTemplates(List<TemplateEntity> templates) {
     if (_didInit) return;
     _didInit = true;
@@ -76,14 +89,24 @@ class _TemplateSwipeScreenState extends ConsumerState<TemplateSwipeScreen> {
         templates.indexWhere((t) => t.uuid == widget.initialUuid);
     _currentIndex = startIndex >= 0 ? startIndex : 0;
 
-    // initialPage ile PageView'ı doğru konumdan başlatıyoruz —
-    // böylece hiçbir animasyon / flash olmadan doğru slide görünür.
     _pageController = PageController(initialPage: _currentIndex);
 
+    // FIX 3: İlk 5 posterin CachedNetworkImage cache'ini önceden ısıt.
+    // Web'de CSS background-image eager render'ı karşılığı budur.
+    // Böylece PageView geçiş anında poster zaten bellekte hazır olur.
+    final warmCount = math.min(5, templates.length);
+    for (int i = 0; i < warmCount; i++) {
+      final url = templates[i].posterUrl;
+      if (url != null && url.isNotEmpty && mounted) {
+        precacheImage(CachedNetworkImageProvider(url), context);
+      }
+    }
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      setState(() {}); // PageController hazır olduğunda build'i tetikle
       _manageWindow(_currentIndex);
 
-      // 3 saniye sonra hint'i gizle
       Future.delayed(const Duration(seconds: 3), () {
         if (mounted) setState(() => _hintVisible = false);
       });
@@ -91,14 +114,10 @@ class _TemplateSwipeScreenState extends ConsumerState<TemplateSwipeScreen> {
   }
 
   // ─── Video Yönetimi ───────────────────────────────────────────────────────
-
-  /// Portrait öncelikli video URL'si; yoksa landscape döner.
   String? _getBestVideoUrl(TemplateEntity template) {
     return template.portraitVideoUrl ?? template.landscapeVideoUrl;
   }
 
-  /// Verilen index için VideoPlayerController oluşturur, initialize eder
-  /// ve gerekirse oynatmaya başlar.
   Future<void> _initController(int index) async {
     if (!mounted) return;
     if (_controllers.containsKey(index)) return;
@@ -114,7 +133,6 @@ class _TemplateSwipeScreenState extends ConsumerState<TemplateSwipeScreen> {
     try {
       await controller.initialize();
 
-      // Widget ağaçtan kaldırılmışsa temizle
       if (!mounted) {
         controller.dispose();
         _controllers.remove(index);
@@ -123,29 +141,23 @@ class _TemplateSwipeScreenState extends ConsumerState<TemplateSwipeScreen> {
 
       await controller.setLooping(true);
 
-      // Şu an aktif slide ise sesi ayarla ve oynat
       if (index == _currentIndex) {
         await controller.setVolume(_isMuted ? 0.0 : 1.0);
         await controller.play();
       }
 
-      // Hazır listesine ekle → build yeniden çalışır, _VideoFadeIn görünür
       if (mounted) setState(() => _readyIndices.add(index));
     } catch (_) {
-      // Başarısız olursa haritadan kaldır, tekrar deneme yapılabilir
       _controllers.remove(index);
     }
   }
 
-  /// Controller'ı durdurur, dispose eder ve haritadan çıkarır.
   void _disposeController(int index) {
     final c = _controllers.remove(index);
     _readyIndices.remove(index);
     c?.dispose();
   }
 
-  /// Aktif pencere içindeki slide'ları preload eder,
-  /// uzak olanların controller'larını serbest bırakır.
   void _manageWindow(int center) {
     for (int i = 0; i < _templates.length; i++) {
       final dist = i - center;
@@ -166,18 +178,21 @@ class _TemplateSwipeScreenState extends ConsumerState<TemplateSwipeScreen> {
     _controllers[prev]?.pause();
     _controllers[prev]?.seekTo(Duration.zero);
 
-    // Yeni slide'ı oynat (controller zaten initialize edilmişse)
-    final c = _controllers[index];
-    if (c != null && c.value.isInitialized) {
-      c.setVolume(_isMuted ? 0.0 : 1.0);
-      c.play();
-    }
-
     _manageWindow(index);
 
-    if (mounted) {
-      setState(() => _hintVisible = false);
-    }
+    if (mounted) setState(() => _hintVisible = false);
+
+    // FIX 5: iOS AVPlayer zamanlama sorunu — web'deki DURATION+16ms mantığının karşılığı.
+    // PageView animasyonu bitmeden _onPageChanged tetiklenebilir; küçük bir delay
+    // ile AVPlayer'ın buffer'ı yerleşmesine fırsat tanınır, siyah flash azalır.
+    Future.delayed(const Duration(milliseconds: 280), () {
+      if (!mounted || _currentIndex != index) return;
+      final c = _controllers[index];
+      if (c != null && c.value.isInitialized) {
+        c.setVolume(_isMuted ? 0.0 : 1.0);
+        c.play();
+      }
+    });
   }
 
   // ─── Ses Kontrolü ─────────────────────────────────────────────────────────
@@ -187,10 +202,6 @@ class _TemplateSwipeScreenState extends ConsumerState<TemplateSwipeScreen> {
   }
 
   // ─── Başlık Yardımcı ──────────────────────────────────────────────────────
-  /// template_entity.dart implementasyonuna göre düzenle:
-  ///   - title String ise → template.title
-  ///   - title Map<String,String> ise → template.titleMap[locale] ?? template.titleMap['en'] ?? ''
-  ///   - getTitle(locale) metodu varsa → template.getTitle(locale)
   String _localizedTitle(TemplateEntity template, String locale) {
     return template.title.localized(locale);
   }
@@ -198,6 +209,7 @@ class _TemplateSwipeScreenState extends ConsumerState<TemplateSwipeScreen> {
   // ─── Build ────────────────────────────────────────────────────────────────
   @override
   Widget build(BuildContext context) {
+    // FIX 1: Artık sadece UI state'i izliyoruz, initWithTemplates buradan çağrılmıyor.
     final templatesAsync = ref.watch(templateListProvider);
     final authState = ref.watch(authProvider);
     final l10n = AppLocalizations.of(context)!;
@@ -213,8 +225,8 @@ class _TemplateSwipeScreenState extends ConsumerState<TemplateSwipeScreen> {
           l10n: l10n,
         ),
         data: (templates) {
-          _initWithTemplates(templates);
-
+          // FIX 1: _initWithTemplates artık buradan çağrılmıyor.
+          // Listener zaten tetikledi; burada sadece boş/hazır olmayan durumu handle et.
           if (templates.isEmpty || _pageController == null) {
             return Center(
               child: Text(
@@ -256,14 +268,13 @@ class _TemplateSwipeScreenState extends ConsumerState<TemplateSwipeScreen> {
           ),
         ),
 
-        // ── Üst Kontroller: Geri + Sayaç ────────────────────────────────────
+        // ── Üst Kontroller: Geri + Sayaç ─────────────────────────────────
         SafeArea(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // Geri Butonu
                 _GlassCircleButton(
                   onTap: () {
                     if (context.canPop()) {
@@ -278,8 +289,6 @@ class _TemplateSwipeScreenState extends ConsumerState<TemplateSwipeScreen> {
                     size: 18,
                   ),
                 ),
-
-                // Sayaç
                 Container(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
@@ -301,7 +310,7 @@ class _TemplateSwipeScreenState extends ConsumerState<TemplateSwipeScreen> {
           ),
         ),
 
-        // ── Ses Butonu (sol alt) ─────────────────────────────────────────────
+        // ── Ses Butonu (sol alt) ────────────────────────────────────────
         SafeArea(
           child: Align(
             alignment: Alignment.bottomLeft,
@@ -319,7 +328,7 @@ class _TemplateSwipeScreenState extends ConsumerState<TemplateSwipeScreen> {
           ),
         ),
 
-        // ── Swipe Hint ──────────────────────────────────────────────────────
+        // ── Swipe Hint ─────────────────────────────────────────────────
         if (_hintVisible)
           Positioned(
             bottom: 130,
@@ -368,9 +377,9 @@ class _TemplateSwipeScreenState extends ConsumerState<TemplateSwipeScreen> {
     return Stack(
       fit: StackFit.expand,
       children: [
-        // ── 1. Poster: her zaman arka planda, anında görünür ────────────────
-        // FIX: poster CSS background gibi çalışır — video hazır olana kadar
-        //      siyah ekran görmemek için bu katman her zaman vardır.
+        // ── 1. Poster: her zaman arka planda, anında görünür ──────────────
+        // FIX 3: precacheImage ile ısıtılmış olduğu için bu widget
+        // ilk görünümde bile ağ beklemeden render edilir.
         if (posterUrl != null && posterUrl.isNotEmpty)
           CachedNetworkImage(
             imageUrl: posterUrl,
@@ -382,13 +391,13 @@ class _TemplateSwipeScreenState extends ConsumerState<TemplateSwipeScreen> {
         else
           Container(color: const Color(0xFF111111)),
 
-        // ── 2. Video: hazır olduğunda fade-in ile posterın üstüne geçer ─────
-        // FIX: _VideoFadeIn opacity 0'dan başlar, 300ms'de 1'e ulaşır.
-        //      Bu geçiş sırasında poster altta görünür — siyah flash yok.
+        // ── 2. Video: hazır olduğunda fade-in ile posterın üstüne geçer ──
+        // FIX 2: _VideoFadeIn artık controller.value.size == 0 durumunu
+        // güvenli şekilde handle ediyor; siyah kutu riski ortadan kalktı.
         if (controller != null && _readyIndices.contains(index))
           _VideoFadeIn(controller: controller),
 
-        // ── 3. Alt Gradient: başlık ve butonlar okunabilsin ─────────────────
+        // ── 3. Alt Gradient ───────────────────────────────────────────────
         Positioned(
           bottom: 0,
           left: 0,
@@ -400,7 +409,7 @@ class _TemplateSwipeScreenState extends ConsumerState<TemplateSwipeScreen> {
                 begin: Alignment.bottomCenter,
                 end: Alignment.topCenter,
                 colors: [
-                  Color(0xD9000000), // 85% siyah
+                  Color(0xD9000000),
                   Colors.transparent,
                 ],
               ),
@@ -408,7 +417,7 @@ class _TemplateSwipeScreenState extends ConsumerState<TemplateSwipeScreen> {
           ),
         ),
 
-        // ── 4. Başlık ────────────────────────────────────────────────────────
+        // ── 4. Başlık ─────────────────────────────────────────────────────
         if (title.isNotEmpty)
           Positioned(
             bottom: 108,
@@ -433,7 +442,7 @@ class _TemplateSwipeScreenState extends ConsumerState<TemplateSwipeScreen> {
             ),
           ),
 
-        // ── 5. Token Maliyeti ────────────────────────────────────────────────
+        // ── 5. Token Maliyeti ─────────────────────────────────────────────
         Positioned(
           bottom: 82,
           left: 16,
@@ -454,7 +463,7 @@ class _TemplateSwipeScreenState extends ConsumerState<TemplateSwipeScreen> {
           ),
         ),
 
-        // ── 6. Aksiyon Butonu (sağ alt) ──────────────────────────────────────
+        // ── 6. Aksiyon Butonu (sağ alt) ───────────────────────────────────
         Positioned(
           bottom: 36,
           right: 16,
@@ -476,8 +485,6 @@ class _TemplateSwipeScreenState extends ConsumerState<TemplateSwipeScreen> {
 }
 
 // ─── Video Fade-In Widget ─────────────────────────────────────────────────────
-// Bağımsız StatefulWidget olarak tanımlanır; initState'te animasyon başlar.
-// Bu sayede her slide'ın videosu kendi fade-in sürecini bağımsız yönetir.
 
 class _VideoFadeIn extends StatefulWidget {
   final VideoPlayerController controller;
@@ -503,7 +510,6 @@ class _VideoFadeInState extends State<_VideoFadeIn>
     _opacity = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _animCtrl, curve: Curves.easeIn),
     );
-    // Widget ağaca girdiği anda fade-in başlar
     _animCtrl.forward();
   }
 
@@ -515,16 +521,31 @@ class _VideoFadeInState extends State<_VideoFadeIn>
 
   @override
   Widget build(BuildContext context) {
-    // FittedBox + SizedBox kombinasyonu VideoPlayer'ı tam ekrana yayar
-    // ve video boyutu ne olursa olsun cover davranışı sağlar.
+    final size = widget.controller.value.size;
+
+    // FIX 2: iOS AVPlayer, initialize() sonrasında size'ı bazen sıfır
+    // döndürür. Bu durumda FittedBox + SizedBox(0,0) kombinasyonu video'yu
+    // tamamen gizler ve siyah kutu bırakır.
+    // Çözüm: size geçerli değilse SizedBox.expand ile doğrudan render et;
+    // cover davranışı VideoPlayer'ın kendi aspect ratio'su ile sağlanır.
+    if (size.width == 0 || size.height == 0) {
+      return FadeTransition(
+        opacity: _opacity,
+        child: SizedBox.expand(
+          child: VideoPlayer(widget.controller),
+        ),
+      );
+    }
+
+    // size geçerliyse tam cover davranışı
     return FadeTransition(
       opacity: _opacity,
       child: SizedBox.expand(
         child: FittedBox(
           fit: BoxFit.cover,
           child: SizedBox(
-            width: widget.controller.value.size.width,
-            height: widget.controller.value.size.height,
+            width: size.width,
+            height: size.height,
             child: VideoPlayer(widget.controller),
           ),
         ),
@@ -699,8 +720,8 @@ class _ErrorView extends StatelessWidget {
             const SizedBox(height: 16),
             Text(
               message,
-              style:
-                  const TextStyle(color: AppColors.textSecondary, fontSize: 14),
+              style: const TextStyle(
+                  color: AppColors.textSecondary, fontSize: 14),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 20),
