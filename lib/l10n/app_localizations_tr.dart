@@ -414,4 +414,64 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get urlContact => 'https://asilov.com/tr/contact';
+
+  @override
+  String get premiumTitle => 'Premium\'a Geç';
+
+  @override
+  String get premiumSubtitle => 'Token satın al, hızlı içerik üret.';
+
+  @override
+  String get loginToSubscribe => 'Satın almak için giriş yapman gerekiyor.';
+
+  @override
+  String get activeSubscription => 'Aktif Abonelik';
+
+  @override
+  String subscriptionExpiry(String date) {
+    return 'Bitiş: $date';
+  }
+
+  @override
+  String get autoRenewing => 'Otomatik yenileme';
+
+  @override
+  String get currentPlan => 'Mevcut Plan';
+
+  @override
+  String get subscribe => 'Abone Ol';
+
+  @override
+  String get loginAndSubscribe => 'Giriş Yap & Abone Ol';
+
+  @override
+  String get activePlan => 'Aktif Plan';
+
+  @override
+  String get noPackagesAvailable => 'Şu an aktif paket bulunmuyor.';
+
+  @override
+  String get subscriptionRenewalNote =>
+      'Abonelik her dönem otomatik olarak yenilenir.\nİptal için cihazınızın mağaza ayarlarını kullanın.';
+
+  @override
+  String get applePaymentTerms => 'Apple Ödeme Koşulları geçerlidir.';
+
+  @override
+  String get googlePaymentTerms => 'Google Play Ödeme Koşulları geçerlidir.';
+
+  @override
+  String purchaseSuccessTokens(int count) {
+    return '$count token hesabınıza eklendi!';
+  }
+
+  @override
+  String get subscriptionSuccess => 'Abonelik başarıyla tamamlandı!';
+
+  @override
+  String get purchaseFailed => 'Satın alma başarısız.';
+
+  @override
+  String get storeUnavailable =>
+      'Uygulama içi satın alma şu an kullanılamıyor.';
 }

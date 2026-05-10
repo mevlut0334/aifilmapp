@@ -161,5 +161,33 @@
 "urlPrivacyPolicy": "https://asilov.com/tr/privacy-policy",
 "urlTermsOfService": "https://asilov.com/tr/terms-of-service",
 "urlAbout": "https://asilov.com/tr/about",
-"urlContact": "https://asilov.com/tr/contact"
+"urlContact": "https://asilov.com/tr/contact",
+"premiumTitle": "Premium'a Geç",
+"premiumSubtitle": "Token satın al, hızlı içerik üret.",
+"loginToSubscribe": "Satın almak için giriş yapman gerekiyor.",
+"activeSubscription": "Aktif Abonelik",
+"subscriptionExpiry": "Bitiş: {date}",
+"@subscriptionExpiry": {
+  "placeholders": {
+    "date": { "type": "String" }
+  }
+},
+"autoRenewing": "Otomatik yenileme",
+"currentPlan": "Mevcut Plan",
+"subscribe": "Abone Ol",
+"loginAndSubscribe": "Giriş Yap & Abone Ol",
+"activePlan": "Aktif Plan",
+"noPackagesAvailable": "Şu an aktif paket bulunmuyor.",
+"subscriptionRenewalNote": "Abonelik her dönem otomatik olarak yenilenir.\nİptal için cihazınızın mağaza ayarlarını kullanın.",
+"applePaymentTerms": "Apple Ödeme Koşulları geçerlidir.",
+"googlePaymentTerms": "Google Play Ödeme Koşulları geçerlidir.",
+"purchaseSuccessTokens": "{count} token hesabınıza eklendi!",
+"@purchaseSuccessTokens": {
+  "placeholders": {
+    "count": { "type": "int" }
+  }
+},
+"subscriptionSuccess": "Abonelik başarıyla tamamlandı!",
+"purchaseFailed": "Satın alma başarısız.",
+"storeUnavailable": "Uygulama içi satın alma şu an kullanılamıyor."
 }

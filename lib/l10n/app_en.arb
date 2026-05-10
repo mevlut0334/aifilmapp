@@ -161,5 +161,33 @@
 "urlPrivacyPolicy": "https://asilov.com/en/privacy-policy",
 "urlTermsOfService": "https://asilov.com/en/terms-of-service",
 "urlAbout": "https://asilov.com/en/about",
-"urlContact": "https://asilov.com/en/contact"
+"urlContact": "https://asilov.com/en/contact",
+"premiumTitle": "Go Premium",
+"premiumSubtitle": "Buy tokens, create fast content.",
+"loginToSubscribe": "You need to login to make a purchase.",
+"activeSubscription": "Active Subscription",
+"subscriptionExpiry": "Expires: {date}",
+"@subscriptionExpiry": {
+  "placeholders": {
+    "date": { "type": "String" }
+  }
+},
+"autoRenewing": "Auto-renewing",
+"currentPlan": "Current Plan",
+"subscribe": "Subscribe",
+"loginAndSubscribe": "Login & Subscribe",
+"activePlan": "Active Plan",
+"noPackagesAvailable": "No active packages available.",
+"subscriptionRenewalNote": "Subscription renews automatically each period.\nTo cancel, use your device's store settings.",
+"applePaymentTerms": "Apple Payment Terms apply.",
+"googlePaymentTerms": "Google Play Payment Terms apply.",
+"purchaseSuccessTokens": "{count} tokens added to your account!",
+"@purchaseSuccessTokens": {
+  "placeholders": {
+    "count": { "type": "int" }
+  }
+},
+"subscriptionSuccess": "Subscription completed successfully!",
+"purchaseFailed": "Purchase failed.",
+"storeUnavailable": "In-app purchase is currently unavailable."
 }

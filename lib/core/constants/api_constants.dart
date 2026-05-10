@@ -20,6 +20,19 @@ class ApiConstants {
   static const String resetPassword = '/reset-password';
   static const String profile = '/profile';
 
+  // Token
+  static const String tokenBalance = '/tokens/balance';
+
+ // Mobile Packages
+  static const String mobilePackages = '/mobile-packages';
+
+ // Purchases
+  static const String iosSubscribe = '/purchases/ios/subscribe';
+  static const String androidSubscribe = '/purchases/android/subscribe';
+
+ // Subscriptions
+  static const String subscriptionStatus = '/subscriptions/status';
+
   // Template Endpoints
   static const String templates = '/templates';
   static String templateDetail(String uuid) => '/templates/$uuid';

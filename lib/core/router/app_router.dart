@@ -16,6 +16,7 @@ import '../../features/generation/presentation/screens/create_template_generatio
 import '../../features/generation/presentation/screens/custom_image_list_screen.dart';
 import '../../features/generation/presentation/screens/generation_list_screen.dart';
 import '../../features/home/presentation/screens/home_screen.dart';
+import '../../features/subscription/presentation/screens/packages_screen.dart';
 import '../../features/templates/presentation/screens/template_swipe_screen.dart';
 import '../widgets/app_shell.dart';
 
@@ -42,7 +43,7 @@ abstract class AppRoutes {
   // Video detay
   static const videoDetail = '/video-detail';
 
-  // Genel rotalar
+  // Genel rotalar (giriş gerektirmez)
   static const templateSwipe = '/template-swipe';
   static const packages      = '/packages';
   static const about         = '/about';
@@ -129,7 +130,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const SplashScreen(),
       ),
 
-      // Auth rotaları
+      // ── Auth rotaları ─────────────────────────────────────────────────────
       GoRoute(
         path: AppRoutes.login,
         builder: (context, state) => const LoginScreen(),
@@ -143,7 +144,15 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const ForgotPasswordScreen(),
       ),
 
-      // Template swipe (shell dışı — tam ekran, giriş gerektirmez)
+      // ── Genel rotalar (shell dışı, giriş gerektirmez) ────────────────────
+
+      // Paketler — hem drawer hem AppBar token badge üzerinden erişilir
+      GoRoute(
+        path: AppRoutes.packages,
+        builder: (context, state) => const PackagesScreen(),
+      ),
+
+      // Template swipe (tam ekran, giriş gerektirmez)
       GoRoute(
         path: '${AppRoutes.templateSwipe}/:uuid',
         builder: (context, state) {
@@ -152,19 +161,21 @@ final routerProvider = Provider<GoRouter>((ref) {
         },
       ),
 
-      // Custom görsel oluşturma (shell dışı — tam ekran, giriş zorunlu)
+      // ── Giriş zorunlu rotalar (shell dışı, tam ekran) ────────────────────
+
+      // Custom görsel oluşturma
       GoRoute(
         path: AppRoutes.createImage,
         builder: (context, state) => const CreateCustomImageScreen(),
       ),
 
-      // Custom video oluşturma (shell dışı — tam ekran, giriş zorunlu)
+      // Custom video oluşturma
       GoRoute(
         path: AppRoutes.createVideo,
         builder: (context, state) => const CreateCustomVideoScreen(),
       ),
 
-      // Şablon ile talep oluşturma (shell dışı — tam ekran, giriş zorunlu)
+      // Şablon ile talep oluşturma
       GoRoute(
         path: '${AppRoutes.createTemplateGeneration}/:templateUuid',
         builder: (context, state) {
@@ -173,7 +184,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         },
       ),
 
-      // ✅ Video detay (shell dışı — tam ekran, giriş zorunlu)
+      // Video detay
       GoRoute(
         path: '${AppRoutes.videoDetail}/:uuid',
         builder: (context, state) {
@@ -193,19 +204,14 @@ final routerProvider = Provider<GoRouter>((ref) {
             path: AppRoutes.home,
             builder: (context, state) => const HomeScreen(),
           ),
-
           GoRoute(
             path: AppRoutes.myTemplates,
             builder: (context, state) => const GenerationListScreen(),
           ),
-
-          // Görsellerim — CustomImageListScreen
           GoRoute(
             path: AppRoutes.myImages,
             builder: (context, state) => const CustomImageListScreen(),
           ),
-
-          // Videolarım — CustomVideoListScreen
           GoRoute(
             path: AppRoutes.myVideos,
             builder: (context, state) => const CustomVideoListScreen(),

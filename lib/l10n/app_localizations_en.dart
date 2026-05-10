@@ -413,4 +413,63 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get urlContact => 'https://asilov.com/en/contact';
+
+  @override
+  String get premiumTitle => 'Go Premium';
+
+  @override
+  String get premiumSubtitle => 'Buy tokens, create fast content.';
+
+  @override
+  String get loginToSubscribe => 'You need to login to make a purchase.';
+
+  @override
+  String get activeSubscription => 'Active Subscription';
+
+  @override
+  String subscriptionExpiry(String date) {
+    return 'Expires: $date';
+  }
+
+  @override
+  String get autoRenewing => 'Auto-renewing';
+
+  @override
+  String get currentPlan => 'Current Plan';
+
+  @override
+  String get subscribe => 'Subscribe';
+
+  @override
+  String get loginAndSubscribe => 'Login & Subscribe';
+
+  @override
+  String get activePlan => 'Active Plan';
+
+  @override
+  String get noPackagesAvailable => 'No active packages available.';
+
+  @override
+  String get subscriptionRenewalNote =>
+      'Subscription renews automatically each period.\nTo cancel, use your device\'s store settings.';
+
+  @override
+  String get applePaymentTerms => 'Apple Payment Terms apply.';
+
+  @override
+  String get googlePaymentTerms => 'Google Play Payment Terms apply.';
+
+  @override
+  String purchaseSuccessTokens(int count) {
+    return '$count tokens added to your account!';
+  }
+
+  @override
+  String get subscriptionSuccess => 'Subscription completed successfully!';
+
+  @override
+  String get purchaseFailed => 'Purchase failed.';
+
+  @override
+  String get storeUnavailable => 'In-app purchase is currently unavailable.';
 }

@@ -901,6 +901,114 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'https://asilov.com/tr/contact'**
   String get urlContact;
+
+  /// No description provided for @premiumTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Premium\'a Geç'**
+  String get premiumTitle;
+
+  /// No description provided for @premiumSubtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Token satın al, hızlı içerik üret.'**
+  String get premiumSubtitle;
+
+  /// No description provided for @loginToSubscribe.
+  ///
+  /// In tr, this message translates to:
+  /// **'Satın almak için giriş yapman gerekiyor.'**
+  String get loginToSubscribe;
+
+  /// No description provided for @activeSubscription.
+  ///
+  /// In tr, this message translates to:
+  /// **'Aktif Abonelik'**
+  String get activeSubscription;
+
+  /// No description provided for @subscriptionExpiry.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bitiş: {date}'**
+  String subscriptionExpiry(String date);
+
+  /// No description provided for @autoRenewing.
+  ///
+  /// In tr, this message translates to:
+  /// **'Otomatik yenileme'**
+  String get autoRenewing;
+
+  /// No description provided for @currentPlan.
+  ///
+  /// In tr, this message translates to:
+  /// **'Mevcut Plan'**
+  String get currentPlan;
+
+  /// No description provided for @subscribe.
+  ///
+  /// In tr, this message translates to:
+  /// **'Abone Ol'**
+  String get subscribe;
+
+  /// No description provided for @loginAndSubscribe.
+  ///
+  /// In tr, this message translates to:
+  /// **'Giriş Yap & Abone Ol'**
+  String get loginAndSubscribe;
+
+  /// No description provided for @activePlan.
+  ///
+  /// In tr, this message translates to:
+  /// **'Aktif Plan'**
+  String get activePlan;
+
+  /// No description provided for @noPackagesAvailable.
+  ///
+  /// In tr, this message translates to:
+  /// **'Şu an aktif paket bulunmuyor.'**
+  String get noPackagesAvailable;
+
+  /// No description provided for @subscriptionRenewalNote.
+  ///
+  /// In tr, this message translates to:
+  /// **'Abonelik her dönem otomatik olarak yenilenir.\nİptal için cihazınızın mağaza ayarlarını kullanın.'**
+  String get subscriptionRenewalNote;
+
+  /// No description provided for @applePaymentTerms.
+  ///
+  /// In tr, this message translates to:
+  /// **'Apple Ödeme Koşulları geçerlidir.'**
+  String get applePaymentTerms;
+
+  /// No description provided for @googlePaymentTerms.
+  ///
+  /// In tr, this message translates to:
+  /// **'Google Play Ödeme Koşulları geçerlidir.'**
+  String get googlePaymentTerms;
+
+  /// No description provided for @purchaseSuccessTokens.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count} token hesabınıza eklendi!'**
+  String purchaseSuccessTokens(int count);
+
+  /// No description provided for @subscriptionSuccess.
+  ///
+  /// In tr, this message translates to:
+  /// **'Abonelik başarıyla tamamlandı!'**
+  String get subscriptionSuccess;
+
+  /// No description provided for @purchaseFailed.
+  ///
+  /// In tr, this message translates to:
+  /// **'Satın alma başarısız.'**
+  String get purchaseFailed;
+
+  /// No description provided for @storeUnavailable.
+  ///
+  /// In tr, this message translates to:
+  /// **'Uygulama içi satın alma şu an kullanılamıyor.'**
+  String get storeUnavailable;
 }
 
 class _AppLocalizationsDelegate

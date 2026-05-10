@@ -116,7 +116,7 @@ class _AppShellState extends ConsumerState<AppShell> {
         centerTitle: true,
         actions: [
           GestureDetector(
-            onTap: () => context.go('/packages'),
+            onTap: () => context.push('/packages'),
             child: Container(
               margin: const EdgeInsets.only(right: 12),
               padding:
@@ -326,7 +326,7 @@ class _AppDrawer extends ConsumerWidget {
               label: l10n.packages,
               onTap: () {
                 Navigator.pop(context);
-                context.go('/packages');
+                context.push('/packages');
               },
             ),
             _DrawerItem(
