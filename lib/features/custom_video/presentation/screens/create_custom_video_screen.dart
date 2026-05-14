@@ -29,6 +29,12 @@ class _CreateCustomVideoScreenState
   bool _isSubmitting = false;
 
   @override
+  void initState() {
+    super.initState();
+    Future.microtask(() => ref.read(tokenBalanceProvider.notifier).refresh());
+  }
+
+  @override
   void dispose() {
     _promptController.dispose();
     super.dispose();
@@ -93,8 +99,7 @@ class _CreateCustomVideoScreenState
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(msg),
-        backgroundColor:
-            success ? const Color(0xFF4CAF50) : AppColors.surface,
+        backgroundColor: success ? const Color(0xFF4CAF50) : AppColors.surface,
         behavior: SnackBarBehavior.floating,
       ),
     );
@@ -204,8 +209,7 @@ class _TokenInfoCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(Icons.toll_outlined,
-                  color: AppColors.gold, size: 16),
+              const Icon(Icons.toll_outlined, color: AppColors.gold, size: 16),
               const SizedBox(width: 6),
               tokenBalance.when(
                 data: (balance) => Text(
@@ -235,7 +239,7 @@ class _TokenInfoCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 6),
-           Text(
+          Text(
             l10n.tokenCostInfo,
             style: const TextStyle(
               color: AppColors.textSecondary,
@@ -301,12 +305,17 @@ class _FormatSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final options = [
-      (CustomVideoFormat.vertical, l10n.formatVertical,
-          Icons.crop_portrait_outlined),
-      (CustomVideoFormat.horizontal, l10n.formatHorizontal,
-          Icons.crop_landscape_outlined),
-      (CustomVideoFormat.square, l10n.formatSquare,
-          Icons.crop_square_outlined),
+      (
+        CustomVideoFormat.vertical,
+        l10n.formatVertical,
+        Icons.crop_portrait_outlined
+      ),
+      (
+        CustomVideoFormat.horizontal,
+        l10n.formatHorizontal,
+        Icons.crop_landscape_outlined
+      ),
+      (CustomVideoFormat.square, l10n.formatSquare, Icons.crop_square_outlined),
     ];
 
     return Row(
@@ -336,22 +345,18 @@ class _FormatSelector extends StatelessWidget {
                 children: [
                   Icon(
                     icon,
-                    color: isSelected
-                        ? AppColors.gold
-                        : AppColors.textDisabled,
+                    color: isSelected ? AppColors.gold : AppColors.textDisabled,
                     size: 24,
                   ),
                   const SizedBox(height: 6),
                   Text(
                     label,
                     style: TextStyle(
-                      color: isSelected
-                          ? AppColors.gold
-                          : AppColors.textSecondary,
+                      color:
+                          isSelected ? AppColors.gold : AppColors.textSecondary,
                       fontSize: 11,
-                      fontWeight: isSelected
-                          ? FontWeight.w600
-                          : FontWeight.w400,
+                      fontWeight:
+                          isSelected ? FontWeight.w600 : FontWeight.w400,
                     ),
                     textAlign: TextAlign.center,
                   ),
