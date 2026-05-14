@@ -22,6 +22,7 @@ class _PackagesScreenState extends ConsumerState<PackagesScreen> {
   @override
   void initState() {
     super.initState();
+    Future.microtask(() => ref.invalidate(mobilePackagesProvider));
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.listenManual(purchaseProvider, (previous, next) {
         if (!mounted) return;
