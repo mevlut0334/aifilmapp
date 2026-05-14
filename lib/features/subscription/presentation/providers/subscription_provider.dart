@@ -14,6 +14,7 @@ import '../../domain/usecases/get_mobile_packages_usecase.dart';
 import '../../domain/usecases/get_subscription_status_usecase.dart';
 import '../../domain/usecases/verify_android_purchase_usecase.dart';
 import '../../domain/usecases/verify_ios_purchase_usecase.dart';
+import 'package:asilov/core/providers/token_provider.dart';
 
 // ─── Platform ────────────────────────────────────────────────────────────────
 
@@ -49,12 +50,14 @@ final verifyIosPurchaseUseCaseProvider =
 
 final verifyAndroidPurchaseUseCaseProvider =
     Provider<VerifyAndroidPurchaseUseCase>((ref) {
-  return VerifyAndroidPurchaseUseCase(ref.watch(subscriptionRepositoryProvider));
+  return VerifyAndroidPurchaseUseCase(
+      ref.watch(subscriptionRepositoryProvider));
 });
 
 final getSubscriptionStatusUseCaseProvider =
     Provider<GetSubscriptionStatusUseCase>((ref) {
-  return GetSubscriptionStatusUseCase(ref.watch(subscriptionRepositoryProvider));
+  return GetSubscriptionStatusUseCase(
+      ref.watch(subscriptionRepositoryProvider));
 });
 
 // ─── Mobile Packages ──────────────────────────────────────────────────────────
@@ -64,8 +67,7 @@ final mobilePackagesProvider =
   MobilePackagesNotifier.new,
 );
 
-class MobilePackagesNotifier
-    extends AsyncNotifier<List<MobilePackageEntity>> {
+class MobilePackagesNotifier extends AsyncNotifier<List<MobilePackageEntity>> {
   @override
   Future<List<MobilePackageEntity>> build() async {
     final platform = ref.read(currentPlatformProvider);
@@ -90,8 +92,8 @@ class MobilePackagesNotifier
 
 // ─── Subscription Status ──────────────────────────────────────────────────────
 
-final subscriptionStatusProvider =
-    AsyncNotifierProvider<SubscriptionStatusNotifier, SubscriptionStatusEntity?>(
+final subscriptionStatusProvider = AsyncNotifierProvider<
+    SubscriptionStatusNotifier, SubscriptionStatusEntity?>(
   SubscriptionStatusNotifier.new,
 );
 
@@ -147,8 +149,7 @@ class PurchaseState {
   }
 }
 
-final purchaseProvider =
-    NotifierProvider<PurchaseNotifier, PurchaseState>(
+final purchaseProvider = NotifierProvider<PurchaseNotifier, PurchaseState>(
   PurchaseNotifier.new,
 );
 
@@ -174,9 +175,12 @@ class PurchaseNotifier extends Notifier<PurchaseState> {
     );
   }
 
-  Future<void> _handlePurchaseUpdates(
-      List<PurchaseDetails> purchases) async {
+  Future<void> _handlePurchaseUpdates(List<PurchaseDetails> purchases) async {
     for (final purchase in purchases) {
+      if (purchase.status == PurchaseStatus.canceled) {
+        state = state.copyWith(status: BuyStatus.idle);
+        continue;
+      }
       if (purchase.status == PurchaseStatus.error) {
         state = state.copyWith(
           status: BuyStatus.error,
@@ -223,6 +227,7 @@ class PurchaseNotifier extends Notifier<PurchaseState> {
           tokensAdded: data['tokens_added'] as int?,
         );
         ref.invalidate(subscriptionStatusProvider);
+        ref.invalidate(tokenBalanceProvider);
       },
       failure: (message, _) {
         state = state.copyWith(
@@ -245,12 +250,11 @@ class PurchaseNotifier extends Notifier<PurchaseState> {
       return;
     }
 
-    final productId = Platform.isIOS
-        ? package.iosProductId
-        : package.androidProductId;
+    final productId =
+        Platform.isIOS ? package.iosProductId : package.androidProductId;
 
-    final response = await InAppPurchase.instance
-        .queryProductDetails({productId});
+    final response =
+        await InAppPurchase.instance.queryProductDetails({productId});
 
     if (response.productDetails.isEmpty) {
       state = state.copyWith(

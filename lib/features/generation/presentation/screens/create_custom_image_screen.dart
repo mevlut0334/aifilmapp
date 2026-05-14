@@ -12,6 +12,7 @@ import 'package:asilov/core/router/app_router.dart';
 import 'package:asilov/features/generation/presentation/providers/generation_provider.dart';
 import 'package:asilov/l10n/app_localizations.dart';
 import 'package:asilov/core/utils/result.dart';
+import 'package:asilov/core/providers/token_provider.dart';
 
 class CreateCustomImageScreen extends ConsumerStatefulWidget {
   const CreateCustomImageScreen({super.key});
@@ -72,6 +73,7 @@ class _CreateCustomImageScreenState
       result.when(
         success: (_) {
           if (mounted) {
+            ref.invalidate(tokenBalanceProvider);
             _showSnack(l10n.requestQueued);
             context.go(AppRoutes.myImages);
           }
@@ -239,9 +241,9 @@ class _OrientationSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final options = [
-      ('portrait',  l10n.portrait,  Icons.crop_portrait_outlined),
+      ('portrait', l10n.portrait, Icons.crop_portrait_outlined),
       ('landscape', l10n.landscape, Icons.crop_landscape_outlined),
-      ('square',    l10n.square,    Icons.crop_square_outlined),
+      ('square', l10n.square, Icons.crop_square_outlined),
     ];
 
     return Row(
@@ -262,9 +264,7 @@ class _OrientationSelector extends StatelessWidget {
                     : AppColors.surface,
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                  color: isSelected
-                      ? AppColors.gold
-                      : AppColors.border,
+                  color: isSelected ? AppColors.gold : AppColors.border,
                   width: isSelected ? 1.5 : 1,
                 ),
               ),
@@ -273,22 +273,18 @@ class _OrientationSelector extends StatelessWidget {
                 children: [
                   Icon(
                     icon,
-                    color: isSelected
-                        ? AppColors.gold
-                        : AppColors.textDisabled,
+                    color: isSelected ? AppColors.gold : AppColors.textDisabled,
                     size: 24,
                   ),
                   const SizedBox(height: 6),
                   Text(
                     label,
                     style: TextStyle(
-                      color: isSelected
-                          ? AppColors.gold
-                          : AppColors.textSecondary,
+                      color:
+                          isSelected ? AppColors.gold : AppColors.textSecondary,
                       fontSize: 12,
-                      fontWeight: isSelected
-                          ? FontWeight.w600
-                          : FontWeight.w400,
+                      fontWeight:
+                          isSelected ? FontWeight.w600 : FontWeight.w400,
                     ),
                   ),
                 ],

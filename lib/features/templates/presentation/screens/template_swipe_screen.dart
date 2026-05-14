@@ -474,7 +474,7 @@ class _TemplateSwipeScreenState extends ConsumerState<TemplateSwipeScreen> {
 
         // ── 6. Aksiyon Butonu (sağ alt) ───────────────────────────────────
         Positioned(
-          bottom: 36,
+          bottom: 90,
           right: 16,
           child: _ActionButton(
             label: isAuthenticated ? l10n.useTemplate : l10n.loginToUse,

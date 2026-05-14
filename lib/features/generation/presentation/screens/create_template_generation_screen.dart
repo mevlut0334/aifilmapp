@@ -15,6 +15,8 @@ import 'package:asilov/core/router/app_router.dart';
 import 'package:asilov/features/templates/domain/entities/template_entity.dart';
 import 'package:asilov/features/templates/presentation/providers/template_provider.dart';
 import 'package:asilov/l10n/app_localizations.dart';
+import 'package:asilov/core/jobs/job_worker.dart';
+import 'package:asilov/core/providers/token_provider.dart';
 
 // ─── Screen ───────────────────────────────────────────────────────────────────
 
@@ -67,8 +69,10 @@ class _CreateTemplateGenerationScreenState
             imagePath: _selectedImage!.path,
             templateId: template.uuid,
           );
+      await JobWorkerHelper.scheduleOnce();
 
       if (mounted) {
+        ref.invalidate(tokenBalanceProvider);
         _showSnack(l10n.requestQueued);
         context.go(AppRoutes.myTemplates);
       }
@@ -124,8 +128,8 @@ class _CreateTemplateGenerationScreenState
       ),
       body: templatesAsync.when(
         loading: () => const Center(
-          child: CircularProgressIndicator(
-              color: AppColors.gold, strokeWidth: 2),
+          child:
+              CircularProgressIndicator(color: AppColors.gold, strokeWidth: 2),
         ),
         error: (e, _) => Center(
           child: Text(
