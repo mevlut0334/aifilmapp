@@ -74,7 +74,7 @@ class GenerationRemoteDatasource {
     final formData = FormData.fromMap(map);
 
     final response = await _dio.post(
-      ApiConstants.generationRequests,
+      ApiConstants.customImageRequests, // ✅ güncellendi
       data: formData,
     );
 
@@ -97,7 +97,7 @@ class GenerationRemoteDatasource {
   // ─── Custom Görsel Talep Listesi ─────────────────────────────────────────
 
   Future<List<GenerationRequestModel>> getCustomImageRequests() async {
-    final response = await _dio.get('/custom-image-requests');
+    final response = await _dio.get(ApiConstants.customImageRequests); // ✅ güncellendi
     final list = response.data['data']['requests'] as List<dynamic>;
     return list
         .map((e) =>

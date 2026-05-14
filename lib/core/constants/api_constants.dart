@@ -41,6 +41,9 @@ class ApiConstants {
   static const String generationRequests = '/generation-requests';
   static String generationDetail(String uuid) => '/generation-requests/$uuid';
 
+  // Custom Image Endpoints
+  static const String customImageRequests = '/custom-image-requests';
+
   // Custom Video Endpoints
   static const String customVideoRequests = '/custom-video-requests';
   static String customVideoDetail(String uuid) => '/custom-video-requests/$uuid';
