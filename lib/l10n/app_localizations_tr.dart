@@ -474,4 +474,13 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get storeUnavailable =>
       'Uygulama içi satın alma şu an kullanılamıyor.';
+
+  @override
+  String get insufficientBalance =>
+      'Yetersiz token bakiyesi. Lütfen token satın alın.';
+
+  @override
+  String insufficientBalanceTemplate(int required, int available) {
+    return 'Yetersiz bakiye. Bu şablon $required token gerektiriyor, bakiyeniz: $available.';
+  }
 }

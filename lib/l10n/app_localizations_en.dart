@@ -472,4 +472,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get storeUnavailable => 'In-app purchase is currently unavailable.';
+
+  @override
+  String get insufficientBalance =>
+      'Insufficient token balance. Please purchase tokens.';
+
+  @override
+  String insufficientBalanceTemplate(int required, int available) {
+    return 'Insufficient balance. This template requires $required tokens, you have $available.';
+  }
 }

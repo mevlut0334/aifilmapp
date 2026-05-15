@@ -63,6 +63,12 @@ class _CreateCustomVideoScreenState
       _showSnack(l10n.promptRequired);
       return;
     }
+    // ── Token kontrolü ──
+    final balance = ref.read(tokenBalanceProvider).valueOrNull ?? 0;
+    if (balance <= 0) {
+      _showSnack(l10n.insufficientBalance);
+      return;
+    }
 
     setState(() => _isSubmitting = true);
 

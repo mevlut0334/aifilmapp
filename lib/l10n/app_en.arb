@@ -189,5 +189,13 @@
 },
 "subscriptionSuccess": "Subscription completed successfully!",
 "purchaseFailed": "Purchase failed.",
-"storeUnavailable": "In-app purchase is currently unavailable."
+"storeUnavailable": "In-app purchase is currently unavailable.",
+"insufficientBalance": "Insufficient token balance. Please purchase tokens.",
+"insufficientBalanceTemplate": "Insufficient balance. This template requires {required} tokens, you have {available}.",
+"@insufficientBalanceTemplate": {
+  "placeholders": {
+    "required": { "type": "int" },
+    "available": { "type": "int" }
+  }
+}
 }

@@ -189,5 +189,13 @@
 },
 "subscriptionSuccess": "Abonelik başarıyla tamamlandı!",
 "purchaseFailed": "Satın alma başarısız.",
-"storeUnavailable": "Uygulama içi satın alma şu an kullanılamıyor."
+"storeUnavailable": "Uygulama içi satın alma şu an kullanılamıyor.",
+"insufficientBalance": "Yetersiz token bakiyesi. Lütfen token satın alın.",
+"insufficientBalanceTemplate": "Yetersiz bakiye. Bu şablon {required} token gerektiriyor, bakiyeniz: {available}.",
+"@insufficientBalanceTemplate": {
+  "placeholders": {
+    "required": { "type": "int" },
+    "available": { "type": "int" }
+  }
+}
 }

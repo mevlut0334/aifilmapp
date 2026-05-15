@@ -59,6 +59,14 @@ class _CreateCustomImageScreenState
       return;
     }
 
+    // ── Token kontrolü ──
+    final balance = ref.read(tokenBalanceProvider).valueOrNull ?? 0;
+    final cost = ref.read(customImageTokenCostProvider);
+    if (balance < cost) {
+      _showSnack(l10n.insufficientBalance);
+      return;
+    }
+
     setState(() => _isSubmitting = true);
 
     try {

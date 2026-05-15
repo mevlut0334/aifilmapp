@@ -1009,6 +1009,18 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Uygulama içi satın alma şu an kullanılamıyor.'**
   String get storeUnavailable;
+
+  /// No description provided for @insufficientBalance.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yetersiz token bakiyesi. Lütfen token satın alın.'**
+  String get insufficientBalance;
+
+  /// No description provided for @insufficientBalanceTemplate.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yetersiz bakiye. Bu şablon {required} token gerektiriyor, bakiyeniz: {available}.'**
+  String insufficientBalanceTemplate(int required, int available);
 }
 
 class _AppLocalizationsDelegate

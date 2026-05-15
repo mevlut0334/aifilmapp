@@ -5,14 +5,15 @@ import 'package:asilov/features/auth/presentation/providers/auth_provider.dart';
 
 // ─── Provider ────────────────────────────────────────────────────────────────
 
-final tokenBalanceProvider =
-    AsyncNotifierProvider<TokenBalanceNotifier, int>(
+final tokenBalanceProvider = AsyncNotifierProvider<TokenBalanceNotifier, int>(
   TokenBalanceNotifier.new,
 );
 
 // ─── Notifier ─────────────────────────────────────────────────────────────────
 
 class TokenBalanceNotifier extends AsyncNotifier<int> {
+  int _customImageTokenCost = 50;
+  int get customImageTokenCost => _customImageTokenCost;
   @override
   Future<int> build() async {
     // authProvider'ı dinle — status değişince build() yeniden çalışır
@@ -33,6 +34,8 @@ class TokenBalanceNotifier extends AsyncNotifier<int> {
       final data = response.data;
 
       if (data['success'] == true) {
+        _customImageTokenCost =
+            (data['data']['custom_image_token_cost'] as num?)?.toInt() ?? 50;
         return (data['data']['balance'] as num?)?.toInt() ?? 0;
       }
       return 0;
@@ -52,3 +55,8 @@ class TokenBalanceNotifier extends AsyncNotifier<int> {
     state = await AsyncValue.guard(_fetchBalance);
   }
 }
+
+final customImageTokenCostProvider = Provider<int>((ref) {
+  ref.watch(tokenBalanceProvider);
+  return ref.read(tokenBalanceProvider.notifier).customImageTokenCost;
+});

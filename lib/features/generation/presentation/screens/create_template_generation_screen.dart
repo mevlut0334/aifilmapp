@@ -60,6 +60,15 @@ class _CreateTemplateGenerationScreenState
       _showSnack(l10n.photoRequired);
       return;
     }
+    // ── Token kontrolü ──
+    final balance = ref.read(tokenBalanceProvider).valueOrNull ?? 0;
+    if (balance < template.tokenCost) {
+       _showSnack(l10n.insufficientBalanceTemplate(
+        template.tokenCost,
+        balance,
+      ));
+      return;
+    }
 
     setState(() => _isSubmitting = true);
 
