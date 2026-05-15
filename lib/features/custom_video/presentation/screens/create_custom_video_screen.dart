@@ -84,7 +84,7 @@ class _CreateCustomVideoScreenState
         case Success():
           if (mounted) {
             ref.read(customVideoListProvider.notifier).refresh();
-            _showSnack(l10n.videoRequestCreated, success: true);
+            _showSnack(l10n.videoRequestCreated, isError: false);
             context.go(AppRoutes.myVideos);
           }
         case Failure<CustomVideoRequestEntity> f:
@@ -101,12 +101,20 @@ class _CreateCustomVideoScreenState
     }
   }
 
-  void _showSnack(String msg, {bool success = false}) {
+  void _showSnack(String msg, {bool isError = true}) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(msg),
-        backgroundColor: success ? const Color(0xFF4CAF50) : AppColors.surface,
+        content: Text(
+          msg,
+          style: const TextStyle(color: Colors.white, fontSize: 13),
+        ),
+        backgroundColor:
+            isError ? const Color(0xFFB91C1C) : const Color(0xFF15803D),
         behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        margin: const EdgeInsets.all(12),
       ),
     );
   }

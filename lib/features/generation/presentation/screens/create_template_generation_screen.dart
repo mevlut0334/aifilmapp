@@ -63,7 +63,7 @@ class _CreateTemplateGenerationScreenState
     // ── Token kontrolü ──
     final balance = ref.read(tokenBalanceProvider).valueOrNull ?? 0;
     if (balance < template.tokenCost) {
-       _showSnack(l10n.insufficientBalanceTemplate(
+      _showSnack(l10n.insufficientBalanceTemplate(
         template.tokenCost,
         balance,
       ));
@@ -82,7 +82,7 @@ class _CreateTemplateGenerationScreenState
 
       if (mounted) {
         ref.invalidate(tokenBalanceProvider);
-        _showSnack(l10n.requestQueued);
+        _showSnack(l10n.requestQueued, isError: false);
         context.go(AppRoutes.myTemplates);
       }
     } catch (e) {
@@ -93,12 +93,20 @@ class _CreateTemplateGenerationScreenState
     }
   }
 
-  void _showSnack(String msg) {
+  void _showSnack(String msg, {bool isError = true}) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(msg),
-        backgroundColor: AppColors.surface,
+        content: Text(
+          msg,
+          style: const TextStyle(color: Colors.white, fontSize: 13),
+        ),
+        backgroundColor:
+            isError ? const Color(0xFFB91C1C) : const Color(0xFF15803D),
         behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        margin: const EdgeInsets.all(12),
       ),
     );
   }

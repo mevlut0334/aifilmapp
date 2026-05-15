@@ -82,7 +82,7 @@ class _CreateCustomImageScreenState
         success: (_) {
           if (mounted) {
             ref.invalidate(tokenBalanceProvider);
-            _showSnack(l10n.requestQueued);
+            _showSnack(l10n.requestQueued, isError: false);
             context.go(AppRoutes.myImages);
           }
         },
@@ -101,12 +101,20 @@ class _CreateCustomImageScreenState
     }
   }
 
-  void _showSnack(String msg) {
+  void _showSnack(String msg, {bool isError = true}) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(msg),
-        backgroundColor: AppColors.surface,
+        content: Text(
+          msg,
+          style: const TextStyle(color: Colors.white, fontSize: 13),
+        ),
+        backgroundColor:
+            isError ? const Color(0xFFB91C1C) : const Color(0xFF15803D),
         behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        margin: const EdgeInsets.all(12),
       ),
     );
   }
