@@ -43,6 +43,7 @@ class _AppShellState extends ConsumerState<AppShell>
   }
 
   void _onTabTapped(int index) {
+    ref.read(tokenBalanceProvider.notifier).refresh();
     switch (index) {
       case 0:
         context.go('/home');

@@ -95,29 +95,40 @@ Future<void> _processJob(UploadJob job) async {
     throw Exception('Image file not found: ${job.imagePath}');
   }
 
+  final typeStr = switch (job.type) {
+    JobType.templateImage => 'template_image',
+    JobType.templateVideo => 'template_video',
+    JobType.customImage => 'custom_image',
+    JobType.customVideo => 'custom_video',
+  };
+
   final formData = FormData.fromMap({
-    'image': await MultipartFile.fromFile(
+    'type': typeStr, // ✅ eklendi
+    'input_image': await MultipartFile.fromFile(
+      // ✅ düzeltildi
       job.imagePath,
       filename: imageFile.uri.pathSegments.last,
     ),
-    if (job.templateId != null) 'template_uuid': job.templateId,
+    if (job.templateId != null) 'template_id': job.templateId, // ✅ düzeltildi
     if (job.orientation != null) 'orientation': job.orientation,
     if (job.description != null) 'description': job.description,
     if (job.prompt != null) 'prompt': job.prompt,
   });
 
   final endpoint = switch (job.type) {
-    JobType.templateImage || JobType.templateVideo =>
+    JobType.templateImage ||
+    JobType.templateVideo =>
       ApiConstants.generationRequests,
-    JobType.customImage || JobType.customVideo =>
+    JobType.customImage ||
+    JobType.customVideo =>
       ApiConstants.customVideoRequests,
   };
 
   final response = await dio.post(endpoint, data: formData);
 
   if (response.statusCode != 200 && response.statusCode != 201) {
-    final msg = (response.data as Map<String, dynamic>?)?['message']
-        ?? 'Unknown error';
+    final msg =
+        (response.data as Map<String, dynamic>?)?['message'] ?? 'Unknown error';
     throw Exception(msg);
   }
 }
