@@ -1,3 +1,4 @@
+import 'dart:ui' as ui;
 import 'package:dio/dio.dart';
 import '../../constants/api_constants.dart';
 import '../../constants/app_constants.dart';
@@ -15,8 +16,12 @@ class AppKeyInterceptor extends Interceptor {
     options.headers[ApiConstants.headerSecretKey] = ApiConstants.secretKey;
 
     final locale = await _secureStorage.getLocale();
-    options.headers[ApiConstants.headerAcceptLanguage] =
-        locale ?? AppConstants.defaultLocale;
+    final deviceLocale = ui.PlatformDispatcher.instance.locale.languageCode;
+    final resolved = AppConstants.supportedLocales.contains(deviceLocale)
+        ? deviceLocale
+        : AppConstants.defaultLocale;
+
+    options.headers[ApiConstants.headerAcceptLanguage] = locale ?? resolved;
 
     handler.next(options);
   }
