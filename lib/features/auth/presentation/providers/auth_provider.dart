@@ -95,25 +95,31 @@ class AuthNotifier extends Notifier<AuthState> {
   AuthState build() => const AuthState();
 
   Future<void> checkAuthStatus() async {
-    final storage = ref.read(secureStorageProvider);
-    final token = await storage.getToken();
+    try {
+      final storage = ref.read(secureStorageProvider);
+      final token = await storage.getToken();
 
-    if (token != null && token.isNotEmpty) {
-      try {
-        final user = await ref
-            .read(authRemoteDatasourceProvider)
-            .getProfile()
-            .then((m) => m.toEntity());
-        state = state.copyWith(
-          status: AuthStatus.authenticated,
-          user: user,
-        );
-      } catch (_) {
-        // Token geçersiz veya süresi dolmuş → temizle
-        await storage.deleteToken();
+      if (token != null && token.isNotEmpty) {
+        try {
+          final user = await ref
+              .read(authRemoteDatasourceProvider)
+              .getProfile()
+              .then((m) => m.toEntity());
+          state = state.copyWith(
+            status: AuthStatus.authenticated,
+            user: user,
+          );
+        } catch (_) {
+          // Token geçersiz veya süresi dolmuş → temizle
+          await storage.deleteToken();
+          state = state.copyWith(status: AuthStatus.unauthenticated);
+        }
+      } else {
         state = state.copyWith(status: AuthStatus.unauthenticated);
       }
-    } else {
+    } catch (_) {
+      // flutter_secure_storage PlatformException veya beklenmedik hata
+      // → token yok gibi davran, uygulama açılsın
       state = state.copyWith(status: AuthStatus.unauthenticated);
     }
   }
