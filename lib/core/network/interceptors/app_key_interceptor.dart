@@ -12,17 +12,26 @@ class AppKeyInterceptor extends Interceptor {
   @override
   void onRequest(
       RequestOptions options, RequestInterceptorHandler handler) async {
-    options.headers[ApiConstants.headerAppKey] = ApiConstants.appKey;
-    options.headers[ApiConstants.headerSecretKey] = ApiConstants.secretKey;
+    try {
+      options.headers[ApiConstants.headerAppKey] = ApiConstants.appKey;
+      options.headers[ApiConstants.headerSecretKey] = ApiConstants.secretKey;
 
-    final locale = await _secureStorage.getLocale();
-    final deviceLocale = ui.PlatformDispatcher.instance.locale.languageCode;
-    final resolved = AppConstants.supportedLocales.contains(deviceLocale)
-        ? deviceLocale
-        : AppConstants.defaultLocale;
+      final deviceLocale = ui.PlatformDispatcher.instance.locale.languageCode;
+      final resolved = AppConstants.supportedLocales.contains(deviceLocale)
+          ? deviceLocale
+          : AppConstants.defaultLocale;
 
-    options.headers[ApiConstants.headerAcceptLanguage] = locale ?? resolved;
+      String? locale;
+      try {
+        locale = await _secureStorage.getLocale();
+      } catch (_) {
+        // Locale okunamazsa cihaz dilini kullan
+      }
 
+      options.headers[ApiConstants.headerAcceptLanguage] = locale ?? resolved;
+    } catch (_) {
+      // Header eklenemezse isteği yine de gönder
+    }
     handler.next(options);
   }
 }

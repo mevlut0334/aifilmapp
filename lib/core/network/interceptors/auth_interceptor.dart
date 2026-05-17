@@ -10,19 +10,25 @@ class AuthInterceptor extends Interceptor {
   @override
   void onRequest(
       RequestOptions options, RequestInterceptorHandler handler) async {
-    final token = await _secureStorage.getToken();
-
-    if (token != null && token.isNotEmpty) {
-      options.headers[ApiConstants.headerAuthorization] = 'Bearer $token';
+    try {
+      final token = await _secureStorage.getToken();
+      if (token != null && token.isNotEmpty) {
+        options.headers[ApiConstants.headerAuthorization] = 'Bearer $token';
+      }
+    } catch (_) {
+      // Token okunamazsa header'a ekleme, isteği yine de gönder
     }
-
     handler.next(options);
   }
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
-    if (err.response?.statusCode == 401) {
-      await _secureStorage.deleteToken();
+    try {
+      if (err.response?.statusCode == 401) {
+        await _secureStorage.deleteToken();
+      }
+    } catch (_) {
+      // Silme başarısız olsa bile hatayı ilet
     }
     handler.next(err);
   }
