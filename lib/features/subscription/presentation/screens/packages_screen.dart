@@ -169,12 +169,6 @@ class _Body extends StatelessWidget {
               const SizedBox(height: 20),
             ],
 
-            // ─ Aktif abonelik ─
-            if (status != null && status.isActive) ...[
-              _ActiveSubscriptionCard(status: status),
-              const SizedBox(height: 24),
-            ],
-
             // ─ Paket listesi ─
             if (packages.isEmpty)
               Center(
@@ -302,88 +296,6 @@ class _LoginWarning extends StatelessWidget {
               ),
             ),
           ),
-        ],
-      ),
-    );
-  }
-}
-
-// ─── Active Subscription Card ─────────────────────────────────────────────────
-
-class _ActiveSubscriptionCard extends StatelessWidget {
-  final SubscriptionStatusEntity status;
-
-  const _ActiveSubscriptionCard({required this.status});
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final expiresAt = status.expiresAt;
-
-    final formattedDate = expiresAt != null
-        ? '${expiresAt.day.toString().padLeft(2, '0')}.'
-            '${expiresAt.month.toString().padLeft(2, '0')}.'
-            '${expiresAt.year}'
-        : null;
-
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.green.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.green.withValues(alpha: 0.4)),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: Colors.green.withValues(alpha: 0.15),
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(
-              Icons.check_circle_outline,
-              color: Colors.green,
-              size: 22,
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  l10n.activeSubscription,
-                  style: const TextStyle(
-                    color: Colors.green,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                if (formattedDate != null)
-                  Text(
-                    l10n.subscriptionExpiry(formattedDate),
-                    style: const TextStyle(
-                      color: AppColors.textSecondary,
-                      fontSize: 12,
-                    ),
-                  ),
-              ],
-            ),
-          ),
-          if (status.autoRenewing)
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-              decoration: BoxDecoration(
-                color: Colors.green.withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Text(
-                l10n.autoRenewing,
-                style: const TextStyle(color: Colors.green, fontSize: 11),
-              ),
-            ),
         ],
       ),
     );
