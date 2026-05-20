@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 
 import '../../../../core/network/api_client.dart';
 import '../../../../core/utils/result.dart';
@@ -93,9 +94,8 @@ class MobilePackagesNotifier extends AsyncNotifier<List<MobilePackageEntity>> {
 // ─── Subscription Status ──────────────────────────────────────────────────────
 
 final subscriptionStatusProvider = AsyncNotifierProvider<
-    SubscriptionStatusNotifier, SubscriptionStatusEntity?>(
-  SubscriptionStatusNotifier.new,
-);
+    SubscriptionStatusNotifier,
+    SubscriptionStatusEntity?>(SubscriptionStatusNotifier.new);
 
 class SubscriptionStatusNotifier
     extends AsyncNotifier<SubscriptionStatusEntity?> {
@@ -181,6 +181,7 @@ class PurchaseNotifier extends Notifier<PurchaseState> {
         state = state.copyWith(status: BuyStatus.idle);
         continue;
       }
+
       if (purchase.status == PurchaseStatus.error) {
         state = state.copyWith(
           status: BuyStatus.error,
@@ -188,10 +189,6 @@ class PurchaseNotifier extends Notifier<PurchaseState> {
         );
         await InAppPurchase.instance.completePurchase(purchase);
         continue;
-      }
-
-      if (purchase.pendingCompletePurchase) {
-        await InAppPurchase.instance.completePurchase(purchase);
       }
 
       if (purchase.status == PurchaseStatus.purchased ||
@@ -221,7 +218,10 @@ class PurchaseNotifier extends Notifier<PurchaseState> {
     }
 
     result.when(
-      success: (data) {
+      success: (data) async {
+        if (purchase.pendingCompletePurchase) {
+          await InAppPurchase.instance.completePurchase(purchase);
+        }
         state = state.copyWith(
           status: BuyStatus.success,
           tokensAdded: data['tokens_added'] as int?,
@@ -242,6 +242,7 @@ class PurchaseNotifier extends Notifier<PurchaseState> {
     state = state.copyWith(status: BuyStatus.loading);
 
     final isAvailable = await InAppPurchase.instance.isAvailable();
+
     if (!isAvailable) {
       state = state.copyWith(
         status: BuyStatus.error,
@@ -264,9 +265,24 @@ class PurchaseNotifier extends Notifier<PurchaseState> {
       return;
     }
 
-    final purchaseParam = PurchaseParam(
-      productDetails: response.productDetails.first,
-    );
+    final productDetail = response.productDetails.first;
+
+    PurchaseParam purchaseParam;
+
+    if (Platform.isAndroid) {
+      final googleDetail = productDetail as GooglePlayProductDetails;
+      final offerToken = googleDetail
+          .productDetails.subscriptionOfferDetails?.first.offerIdToken;
+      purchaseParam = GooglePlayPurchaseParam(
+        productDetails: productDetail,
+        changeSubscriptionParam: null,
+        offerToken: offerToken,
+      );
+    } else {
+      purchaseParam = PurchaseParam(
+        productDetails: productDetail,
+      );
+    }
 
     await InAppPurchase.instance.buyNonConsumable(
       purchaseParam: purchaseParam,
