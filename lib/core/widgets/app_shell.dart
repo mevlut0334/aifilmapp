@@ -281,6 +281,8 @@ class _AppDrawer extends ConsumerWidget {
     WidgetRef ref,
     AppLocalizations l10n,
   ) async {
+    // ref'i en başta yakala, await öncesinde
+    final notifier = ref.read(authProvider.notifier);
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
@@ -313,9 +315,12 @@ class _AppDrawer extends ConsumerWidget {
     );
 
     if (confirmed != true) return;
-    if (!context.mounted) return;
+    
 
-    final success = await ref.read(authProvider.notifier).deleteAccount();
+    final success = await notifier.deleteAccount();
+
+    debugPrint('🗑️ deleteAccount result: $success');
+    
 
     if (!context.mounted) return;
 

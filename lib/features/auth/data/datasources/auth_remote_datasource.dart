@@ -3,6 +3,7 @@ import '../../../../core/constants/api_constants.dart';
 import '../../../../core/error/exceptions.dart';
 import '../models/login_response_model.dart';
 import '../models/user_model.dart';
+import 'package:flutter/foundation.dart';
 
 class AuthRemoteDatasource {
   final Dio _dio;
@@ -61,10 +62,16 @@ class AuthRemoteDatasource {
 
   Future<void> deleteAccount() async {
     try {
-      await _dio.delete(ApiConstants.deleteAccount);
-    } on DioException catch (e) {
-      _handleError(e);
-    }
+    debugPrint('🗑️ deleteAccount isteği gönderiliyor...');
+    final response = await _dio.delete(ApiConstants.deleteAccount);
+    debugPrint('🗑️ deleteAccount response: ${response.statusCode} ${response.data}');
+  } on DioException catch (e) {
+    debugPrint('🗑️ deleteAccount DioException: ${e.response?.statusCode} ${e.response?.data} ${e.message}');
+    _handleError(e);
+  } catch (e) {
+    debugPrint('🗑️ deleteAccount unexpected error: $e');
+    rethrow;
+  }
   }
 
   Future<void> forgotPassword({required String email}) async {
