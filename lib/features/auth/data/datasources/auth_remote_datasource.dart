@@ -59,6 +59,14 @@ class AuthRemoteDatasource {
     }
   }
 
+  Future<void> deleteAccount() async {
+    try {
+      await _dio.delete(ApiConstants.deleteAccount);
+    } on DioException catch (e) {
+      _handleError(e);
+    }
+  }
+
   Future<void> forgotPassword({required String email}) async {
     try {
       await _dio.post(

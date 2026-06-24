@@ -12,6 +12,12 @@
   "registerButton": "Register",
   "createAccount": "Create Account",
 
+  "deleteAccount": "Delete Account",
+  "deleteAccountConfirmTitle": "Delete Account",
+  "deleteAccountConfirmMessage": "Are you sure you want to delete your account? This action cannot be undone.",
+  "deleteAccountCancel": "Cancel",
+  "deleteAccountFailed": "Failed to delete account. Please try again.",
+
   "email": "Email",
   "emailHint": "example@email.com",
   "emailRequired": "Email is required",

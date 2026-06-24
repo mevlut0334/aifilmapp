@@ -84,6 +84,19 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  Future<Result<void>> deleteAccount() async {
+    try {
+      await _datasource.deleteAccount();
+      await _secureStorage.clearAll();
+      return const Success(null);
+    } on ServerException catch (e) {
+      return Failure(e.message, statusCode: e.statusCode);
+    } catch (e) {
+      return Failure(e.toString());
+    }
+  }
+
+  @override
   Future<Result<void>> forgotPassword({required String email}) async {
     try {
       await _datasource.forgotPassword(email: email);

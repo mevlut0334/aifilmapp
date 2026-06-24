@@ -276,6 +276,58 @@ class _AppDrawer extends ConsumerWidget {
     }
   }
 
+  Future<void> _confirmDeleteAccount(
+    BuildContext context,
+    WidgetRef ref,
+    AppLocalizations l10n,
+  ) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: AppColors.surface,
+        title: Text(
+          l10n.deleteAccountConfirmTitle,
+          style: const TextStyle(color: AppColors.textPrimary),
+        ),
+        content: Text(
+          l10n.deleteAccountConfirmMessage,
+          style: const TextStyle(color: AppColors.textSecondary),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text(
+              l10n.deleteAccountCancel,
+              style: const TextStyle(color: AppColors.textSecondary),
+            ),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(
+              l10n.deleteAccount,
+              style: const TextStyle(color: Colors.redAccent),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true) return;
+    if (!context.mounted) return;
+
+    final success = await ref.read(authProvider.notifier).deleteAccount();
+
+    if (!context.mounted) return;
+
+    if (success) {
+      context.go('/login');
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.deleteAccountFailed)),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final user = authState.user;
@@ -381,6 +433,16 @@ class _AppDrawer extends ConsumerWidget {
                 _launchUrl('https://asilov.com/$locale/contact');
               },
             ),
+            if (user != null)
+              _DrawerItem(
+                icon: Icons.delete_outline,
+                label: l10n.deleteAccount,
+                color: Colors.redAccent,
+                onTap: () {
+                  Navigator.pop(context);
+                  _confirmDeleteAccount(context, ref, l10n);
+                },
+              ),
             const Spacer(),
             const Divider(color: Color(0xFF2A2A2A), height: 1),
             if (user != null)

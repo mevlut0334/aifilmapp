@@ -146,6 +146,36 @@ abstract class AppLocalizations {
   /// **'Hesap Oluştur'**
   String get createAccount;
 
+  /// No description provided for @deleteAccount.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hesabı Sil'**
+  String get deleteAccount;
+
+  /// No description provided for @deleteAccountConfirmTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hesabı Sil'**
+  String get deleteAccountConfirmTitle;
+
+  /// No description provided for @deleteAccountConfirmMessage.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hesabınızı silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.'**
+  String get deleteAccountConfirmMessage;
+
+  /// No description provided for @deleteAccountCancel.
+  ///
+  /// In tr, this message translates to:
+  /// **'İptal'**
+  String get deleteAccountCancel;
+
+  /// No description provided for @deleteAccountFailed.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hesap silinemedi. Lütfen tekrar deneyin.'**
+  String get deleteAccountFailed;
+
   /// No description provided for @email.
   ///
   /// In tr, this message translates to:

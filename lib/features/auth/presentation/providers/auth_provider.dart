@@ -11,6 +11,7 @@ import '../../domain/entities/user_entity.dart';
 import '../../domain/usecases/forgot_password_usecase.dart';
 import '../../domain/usecases/login_usecase.dart';
 import '../../domain/usecases/logout_usecase.dart';
+import '../../domain/usecases/delete_account_usecase.dart';
 import '../../domain/usecases/register_usecase.dart';
 import '../../domain/usecases/reset_password_usecase.dart';
 
@@ -44,6 +45,10 @@ final registerUseCaseProvider = Provider<RegisterUseCase>((ref) {
 
 final logoutUseCaseProvider = Provider<LogoutUseCase>((ref) {
   return LogoutUseCase(ref.read(authRepositoryProvider));
+});
+
+final deleteAccountUseCaseProvider = Provider<DeleteAccountUseCase>((ref) {
+  return DeleteAccountUseCase(ref.read(authRepositoryProvider));
 });
 
 final forgotPasswordUseCaseProvider = Provider<ForgotPasswordUseCase>((ref) {
@@ -247,6 +252,25 @@ class AuthNotifier extends Notifier<AuthState> {
     state = state.copyWith(isLoading: true, clearError: true);
     await ref.read(logoutUseCaseProvider).call();
     state = const AuthState(status: AuthStatus.unauthenticated);
+  }
+
+  Future<bool> deleteAccount() async {
+    state = state.copyWith(isLoading: true, clearError: true);
+
+    final result = await ref.read(deleteAccountUseCaseProvider).call();
+
+    switch (result) {
+      case Success<void>():
+        state = const AuthState(status: AuthStatus.unauthenticated);
+        return true;
+
+      case Failure<void>():
+        state = state.copyWith(
+          errorMessage: result.message,
+          isLoading: false,
+        );
+        return false;
+    }
   }
 
   void clearError() {

@@ -19,6 +19,7 @@ class ApiConstants {
   static const String forgotPassword = '/forgot-password';
   static const String resetPassword = '/reset-password';
   static const String profile = '/profile';
+  static const String deleteAccount = '/account';
 
   // Token
   static const String tokenBalance = '/tokens/balance';

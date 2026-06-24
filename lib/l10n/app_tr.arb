@@ -12,6 +12,12 @@
   "registerButton": "Kayıt Ol",
   "createAccount": "Hesap Oluştur",
 
+  "deleteAccount": "Hesabı Sil",
+  "deleteAccountConfirmTitle": "Hesabı Sil",
+  "deleteAccountConfirmMessage": "Hesabınızı silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.",
+  "deleteAccountCancel": "İptal",
+  "deleteAccountFailed": "Hesap silinemedi. Lütfen tekrar deneyin.",
+
   "email": "E-posta",
   "emailHint": "ornek@email.com",
   "emailRequired": "E-posta zorunludur",

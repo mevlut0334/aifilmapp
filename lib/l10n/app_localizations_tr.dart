@@ -33,6 +33,22 @@ class AppLocalizationsTr extends AppLocalizations {
   String get createAccount => 'Hesap Oluştur';
 
   @override
+  String get deleteAccount => 'Hesabı Sil';
+
+  @override
+  String get deleteAccountConfirmTitle => 'Hesabı Sil';
+
+  @override
+  String get deleteAccountConfirmMessage =>
+      'Hesabınızı silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.';
+
+  @override
+  String get deleteAccountCancel => 'İptal';
+
+  @override
+  String get deleteAccountFailed => 'Hesap silinemedi. Lütfen tekrar deneyin.';
+
+  @override
   String get email => 'E-posta';
 
   @override
