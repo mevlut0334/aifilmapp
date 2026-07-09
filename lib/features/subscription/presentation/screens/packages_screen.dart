@@ -10,6 +10,7 @@ import 'package:asilov/features/auth/presentation/providers/auth_provider.dart';
 import 'package:asilov/features/subscription/domain/entities/mobile_package_entity.dart';
 import 'package:asilov/features/subscription/domain/entities/subscription_status_entity.dart';
 import 'package:asilov/features/subscription/presentation/providers/subscription_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PackagesScreen extends ConsumerStatefulWidget {
   const PackagesScreen({super.key});
@@ -460,10 +461,18 @@ class _PackageCard extends StatelessWidget {
 
 // ─── Footer ───────────────────────────────────────────────────────────────────
 
+
 class _Footer extends StatelessWidget {
   final String platform;
 
   const _Footer({required this.platform});
+
+  Future<void> _openUrl(String url) async {
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -490,6 +499,43 @@ class _Footer extends StatelessWidget {
             color: AppColors.textDisabled,
             fontSize: 11,
           ),
+        ),
+        const SizedBox(height: 12),
+
+        // ── Privacy Policy & Terms of Use linkleri ──
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            GestureDetector(
+              onTap: () => _openUrl('https://asilov.com/en/privacy-policy'),
+              child: Text(
+                l10n.privacyPolicy,
+                style: const TextStyle(
+                  color: AppColors.gold,
+                  fontSize: 12,
+                  decoration: TextDecoration.underline,
+                ),
+              ),
+            ),
+            const SizedBox(width: 16),
+            Text(
+              '•',
+              style: TextStyle(color: AppColors.textDisabled.withValues(alpha: 0.5)),
+            ),
+            const SizedBox(width: 16),
+            GestureDetector(
+              onTap: () => _openUrl(
+                  'https://www.apple.com/legal/internet-services/itunes/dev/stdeula/'),
+              child: Text(
+                l10n.termsOfUse,
+                style: const TextStyle(
+                  color: AppColors.gold,
+                  fontSize: 12,
+                  decoration: TextDecoration.underline,
+                ),
+              ),
+            ),
+          ],
         ),
       ],
     );

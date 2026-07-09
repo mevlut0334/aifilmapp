@@ -146,6 +146,18 @@ abstract class AppLocalizations {
   /// **'Hesap Oluştur'**
   String get createAccount;
 
+  /// No description provided for @privacyPolicy.
+  ///
+  /// In tr, this message translates to:
+  /// **'Gizlilik Politikası'**
+  String get privacyPolicy;
+
+  /// No description provided for @termsOfUse.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kullanım Şartları'**
+  String get termsOfUse;
+
   /// No description provided for @deleteAccount.
   ///
   /// In tr, this message translates to:

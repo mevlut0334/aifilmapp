@@ -12,6 +12,9 @@
   "registerButton": "Kayıt Ol",
   "createAccount": "Hesap Oluştur",
 
+  "privacyPolicy": "Gizlilik Politikası",
+  "termsOfUse": "Kullanım Şartları",
+
   "deleteAccount": "Hesabı Sil",
   "deleteAccountConfirmTitle": "Hesabı Sil",
   "deleteAccountConfirmMessage": "Hesabınızı silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.",

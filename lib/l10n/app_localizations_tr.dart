@@ -33,6 +33,12 @@ class AppLocalizationsTr extends AppLocalizations {
   String get createAccount => 'Hesap Oluştur';
 
   @override
+  String get privacyPolicy => 'Gizlilik Politikası';
+
+  @override
+  String get termsOfUse => 'Kullanım Şartları';
+
+  @override
   String get deleteAccount => 'Hesabı Sil';
 
   @override
